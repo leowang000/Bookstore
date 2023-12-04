@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2023-12-04T05:52:58.052Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.2 Chrome/114.0.5735.289 Electron/25.9.4 Safari/537.36" etag="X65LBVMkulglINeludEJ" version="22.1.2" type="device">
+<mxfile host="Electron" modified="2023-12-04T13:18:25.973Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.2 Chrome/114.0.5735.289 Electron/25.9.4 Safari/537.36" etag="u-XfB1PZPlMopByYQ1Dm" version="22.1.2" type="device">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
     <mxGraphModel dx="868" dy="613" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -26,11 +26,44 @@
             <mxPoint x="2" as="offset" />
           </mxGeometry>
         </mxCell>
+        <mxCell id="QScap3ZGjUXTnHB0jdiF-0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Deetn7VXw1Hc985w1RGA-2" target="Deetn7VXw1Hc985w1RGA-34">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="321" y="510" />
+              <mxPoint x="570" y="510" />
+              <mxPoint x="570" y="270" />
+              <mxPoint x="699" y="270" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QScap3ZGjUXTnHB0jdiF-1" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;录入图书信息、修改图书信息&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="QScap3ZGjUXTnHB0jdiF-0">
+          <mxGeometry x="-0.5664" y="-1" relative="1" as="geometry">
+            <mxPoint x="12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QScap3ZGjUXTnHB0jdiF-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Deetn7VXw1Hc985w1RGA-2" target="Deetn7VXw1Hc985w1RGA-4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="390" y="443" />
+              <mxPoint x="390" y="239" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QScap3ZGjUXTnHB0jdiF-3" value="Text" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="QScap3ZGjUXTnHB0jdiF-2">
+          <mxGeometry x="-0.8155" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QScap3ZGjUXTnHB0jdiF-4" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;创建用户&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="QScap3ZGjUXTnHB0jdiF-2">
+          <mxGeometry x="-0.8223" y="2" relative="1" as="geometry">
+            <mxPoint x="9" y="2" as="offset" />
+          </mxGeometry>
+        </mxCell>
         <mxCell id="Deetn7VXw1Hc985w1RGA-2" value="&lt;span style=&quot;font-size: 18px;&quot;&gt;销售人员&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;fontSize=18;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="219" y="434" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="Deetn7VXw1Hc985w1RGA-3" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;店长&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;fontSize=18;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-          <mxGeometry x="239" y="554" width="80" height="60" as="geometry" />
+          <mxGeometry x="239" y="580" width="80" height="60" as="geometry" />
         </mxCell>
         <mxCell id="Deetn7VXw1Hc985w1RGA-4" value="账号系统" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="410" y="194" width="109" height="60" as="geometry" />
@@ -74,9 +107,9 @@
             <mxPoint x="639" y="344" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Deetn7VXw1Hc985w1RGA-11" value="登录/注册、查询图书、购买、进货" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" parent="Deetn7VXw1Hc985w1RGA-9" vertex="1" connectable="0">
+        <mxCell id="Deetn7VXw1Hc985w1RGA-11" value="登录/注册、查询图书、购买、进货、录&lt;br&gt;入图书信息、修改图书信息、创建用户" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" parent="Deetn7VXw1Hc985w1RGA-9" vertex="1" connectable="0">
           <mxGeometry x="-0.1667" y="1" relative="1" as="geometry">
-            <mxPoint x="1" as="offset" />
+            <mxPoint x="1" y="-1" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Deetn7VXw1Hc985w1RGA-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=12;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Deetn7VXw1Hc985w1RGA-18" target="Deetn7VXw1Hc985w1RGA-34" edge="1">
@@ -115,7 +148,7 @@
         </mxCell>
         <mxCell id="Deetn7VXw1Hc985w1RGA-46" value="更改" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" parent="Deetn7VXw1Hc985w1RGA-44" vertex="1" connectable="0">
           <mxGeometry x="0.1496" relative="1" as="geometry">
-            <mxPoint x="-32" y="-21" as="offset" />
+            <mxPoint x="-32" y="-22" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Deetn7VXw1Hc985w1RGA-18" value="购书系统" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
@@ -137,8 +170,8 @@
         <mxCell id="Deetn7VXw1Hc985w1RGA-48" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=12;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Deetn7VXw1Hc985w1RGA-19" target="Deetn7VXw1Hc985w1RGA-29" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="569" y="464" />
-              <mxPoint x="569" y="314" />
+              <mxPoint x="580" y="464" />
+              <mxPoint x="580" y="314" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -191,7 +224,7 @@
         </mxCell>
         <mxCell id="Deetn7VXw1Hc985w1RGA-64" value="查询图书" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" parent="Deetn7VXw1Hc985w1RGA-63" vertex="1" connectable="0">
           <mxGeometry x="-0.3928" y="1" relative="1" as="geometry">
-            <mxPoint x="10" as="offset" />
+            <mxPoint x="22" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Deetn7VXw1Hc985w1RGA-65" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;fontSize=12;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Deetn7VXw1Hc985w1RGA-3" target="Deetn7VXw1Hc985w1RGA-29" edge="1">
@@ -199,8 +232,8 @@
             <mxPoint x="439" y="474" as="sourcePoint" />
             <mxPoint x="489" y="424" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="579" y="563" />
-              <mxPoint x="579" y="329" />
+              <mxPoint x="590" y="589" />
+              <mxPoint x="590" y="329" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -214,8 +247,8 @@
             <mxPoint x="439" y="474" as="sourcePoint" />
             <mxPoint x="489" y="424" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="589" y="584" />
-              <mxPoint x="589" y="429" />
+              <mxPoint x="600" y="610" />
+              <mxPoint x="600" y="429" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -229,8 +262,8 @@
             <mxPoint x="439" y="474" as="sourcePoint" />
             <mxPoint x="489" y="424" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="599" y="605" />
-              <mxPoint x="599" y="529" />
+              <mxPoint x="610" y="631" />
+              <mxPoint x="610" y="529" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -244,9 +277,9 @@
             <mxPoint x="439" y="474" as="sourcePoint" />
             <mxPoint x="489" y="424" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="279" y="634" />
-              <mxPoint x="609" y="634" />
-              <mxPoint x="609" y="604" />
+              <mxPoint x="279" y="660" />
+              <mxPoint x="620" y="660" />
+              <mxPoint x="620" y="604" />
             </Array>
           </mxGeometry>
         </mxCell>
