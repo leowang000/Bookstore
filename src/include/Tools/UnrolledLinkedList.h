@@ -8,7 +8,6 @@
 #include <fstream>
 #include <queue>
 #include <list>
-#include <limits>
 
 #include "File.h"
 
@@ -365,14 +364,16 @@ std::vector<val_t> UnrolledLinkedList<key_t, val_t>::Find(const key_t &key) {
   if (node_list_.empty() || key < node_list_.begin()->min_pair_.key_) {
     return ans;
   }
-  pair_t min_pair(key, val_t()), max_pair(key, std::numeric_limits<val_t>::max());
-  auto it = FindInsertNode(pair_t(key, 0));
+  pair_t min_pair(key, val_t());
+  auto it = FindInsertNode(min_pair);
   while (it != node_list_.end() && it->min_pair_.key_ <= key) {
     ReadBlock(block, it->block_index_);
     auto st_it = std::lower_bound(block.begin(), block.begin() + it->size_, min_pair);
-    auto end_it = std::upper_bound(block.begin(), block.begin() + it->size_, max_pair);
-    for (auto iter = st_it; iter != end_it; ++iter) {
-      ans.push_back(iter->val_);
+    while (st_it != block.begin() + it->size_) {
+      if (st_it->key_ == key) {
+        ans.push_back(st_it->val_);
+      }
+      ++st_it;
     }
     ++it;
   }
@@ -384,14 +385,16 @@ bool UnrolledLinkedList<key_t, val_t>::Have(const key_t &key) {
   if (node_list_.empty() || key < node_list_.begin()->min_pair_.key_) {
     return false;
   }
-  pair_t min_pair(key, val_t()), max_pair(key, std::numeric_limits<val_t>::max());
-  auto it = FindInsertNode(pair_t(key, 0));
+  pair_t min_pair(key, val_t());
+  auto it = FindInsertNode(min_pair);
   while (it != node_list_.end() && it->min_pair_.key_ <= key) {
     ReadBlock(block, it->block_index_);
     auto st_it = std::lower_bound(block.begin(), block.begin() + it->size_, min_pair);
-    auto end_it = std::upper_bound(block.begin(), block.begin() + it->size_, max_pair);
-    if (end_it != st_it) {
-      return true;
+    while (st_it != block.begin() + it->size_) {
+      if (st_it->key_ == key) {
+        return true;
+      }
+      ++st_it;
     }
     ++it;
   }

@@ -9,13 +9,22 @@
 
 class Log {
 public:
+  using employee_t = String<65>;
+  using instruction_t = String<280>;
+
   Log(char *, char *, char *, char *);
 
-private:
-  UnrolledLinkedList<String<65>, String<280>> employee_map_;
-  File finance_file_, log_file_;
+  void PrintLogFile();
+  void PrintFinanceInfo(int);
+  void PrintFinance();
 
-  String<280> GetLogInfo();
+  int finance_file_length;
+
+private:
+  instruction_t GetLogInfo();
+
+  File finance_file_, log_file_;
+  UnrolledLinkedList<employee_t, instruction_t> employee_map_;
 };
 
 #endif //BOOKSTORE_2023_LOG_H

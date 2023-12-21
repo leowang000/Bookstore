@@ -80,6 +80,9 @@ void Books::Modify(const Books::Modification &modification, int line_num) {
   }
   WriteBook(new_book, line_num);
 }
+void Books::AddBook(Books::Book &book) {
+  WriteBook(book);
+}
 void Books::ReadBook(Book &dst, int line_num) {
   book_file_.Read(dst, line_num);
 }

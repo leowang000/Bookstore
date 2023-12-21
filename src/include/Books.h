@@ -53,17 +53,18 @@ public:
   bool HaveAuthor(const author_t &);
   bool HaveKeyword(const keyword_t &);
   void Modify(const Modification &, int);
+  void AddBook(Book &);
 
 private:
+  void ReadBook(Book &, int);
+  int WriteBook(Book &, int line_num = -1);
+
   int book_cnt_;
   File book_file_;
   UnrolledLinkedList<ISBN_t, int> ISBN_map_;
   UnrolledLinkedList<book_name_t, int> book_name_map_;
   UnrolledLinkedList<author_t, int> author_map_;
   UnrolledLinkedList<keyword_t, int> keyword_map_;
-
-  void ReadBook(Book &, int);
-  int WriteBook(Book &, int line_num = -1);
 };
 
 #endif //BOOKSTORE_2023_BOOKS_H
