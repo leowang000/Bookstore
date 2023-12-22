@@ -5,6 +5,7 @@
 #include "Accounts.h"
 #include "Books.h"
 #include "Log.h"
+#include "type_definition.h"
 
 class Instruction;
 class Accounts;
@@ -17,9 +18,7 @@ public:
   friend Books;
   friend Log;
 
-  static const int doublePrecision = 2;
-
-  BookStore(char *, char *, char *, char *, char *, char *, char *, char *, char *, char *, char *, char *, char *,
+  explicit BookStore(char *, char *, char *, char *, char *, char *, char *, char *, char *, char *, char *, char *, char *,
             char *, char *);
   ~BookStore();
 
@@ -32,7 +31,6 @@ private:
   Log log_;
   Instruction *inst_;
 
-  void CheckPrivilege();
   void GetLogInfo();
 };
 

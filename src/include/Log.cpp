@@ -1,7 +1,6 @@
 #include <iomanip>
 
 #include "Log.h"
-#include "BookStore.h"
 
 FinanceInfo::FinanceInfo() : time_(), income_(), outcome_() {}
 FinanceInfo::FinanceInfo(int time, const long double &income, const long double &outcome)
@@ -18,13 +17,13 @@ void Log::PrintLogFile(std::ostream &os) {
     if (i + logReadLength <= log_file_length_) {
       log_file_.read(reinterpret_cast<char *>(info), sizeof(log_info_t) * logReadLength);
       for (j = 0; j < logReadLength; j++) {
-        os << info[j];
+        os << info[j] << "\n";
       }
       continue;
     }
     log_file_.read(reinterpret_cast<char *>(info), sizeof(log_info_t) * (log_file_length_ - i));
     for (j = 0; j < log_file_length_ - i; j++) {
-      os << info[j];
+      os << info[j] << "\n";
     }
   }
   log_file_.close();
@@ -52,14 +51,14 @@ void Log::PrintFinanceInfo(std::ostream &os, int count) {
 }
 void Log::PrintFinance(std::ostream &os) {
   int i, j;
-  FinanceInfo info[financeReadlength];
+  FinanceInfo info[financeReadLength];
   long double prev_income = 0, prev_outcome = 0;
   os << "------------FINANCE------------\n";
   finance_file_.Open();
-  for (i = 0; i < finance_file_length_; i += financeReadlength) {
-    if (i + financeReadlength <= finance_file_length_) {
-      finance_file_.read(reinterpret_cast<char *>(info), sizeof(FinanceInfo) * financeReadlength);
-      for (j = 0; j < financeReadlength; j++) {
+  for (i = 0; i < finance_file_length_; i += financeReadLength) {
+    if (i + financeReadLength <= finance_file_length_) {
+      finance_file_.read(reinterpret_cast<char *>(info), sizeof(FinanceInfo) * financeReadLength);
+      for (j = 0; j < financeReadLength; j++) {
         os << std::fixed << std::setprecision(2) << "+ " << info[j].income_ - prev_income << " - " <<
             info[j].outcome_ - prev_outcome << " time :" << info[j].time_ << "\n";
         prev_income = info[j].income_;
@@ -85,7 +84,15 @@ void Log::AddFinanceInfo(FinanceInfo &info) {
   finance_file_.close();
   finance_file_length_++;
 }
-void Log::AddLogInfo(Log::log_info_t &info) {
+FinanceInfo Log::GetLastFinanceInfo() {
+  if (finance_file_length_ == 0) {
+    return {};
+  }
+  FinanceInfo result;
+  finance_file_.Read(result, finance_file_length_ - 1);
+  return result;
+}
+void Log::AddLogInfo(log_info_t &info) {
   log_file_.Open();
   log_file_.seekp(0, std::ios::end);
   log_file_.write(reinterpret_cast<char *>(&info), sizeof(log_info_t));
@@ -94,4 +101,9 @@ void Log::AddLogInfo(Log::log_info_t &info) {
 }
 int Log::GetFinanceFileLength() const {
   return finance_file_length_;
+}
+void Log::PrintEmployee(std::ostream &os) {
+  os << "------------EMPLOYEE------------\n";
+  employee_map_.Print(os);
+  os << "----------EMPLOYEE END----------\n";
 }

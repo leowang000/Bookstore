@@ -13,17 +13,13 @@
 
 template<class key_t, class val_t>
 class UnrolledLinkedList {
-private:
-  static const int maxBlockSize = 300;
-  static const int minBlockSize = 5;
-  static const int maxBlockIndex = 10000;
-
+public:
   struct pair_t {
     key_t key_;
     val_t val_;
 
     pair_t();
-    pair_t(key_t, val_t);
+    explicit pair_t(key_t, val_t);
     pair_t(const pair_t &) = default;
     bool operator<(const pair_t &) const;
     bool operator>(const pair_t &) const;
@@ -33,12 +29,29 @@ private:
     bool operator!=(const pair_t &) const;
     pair_t &operator=(const pair_t &);
   };
+
+  explicit UnrolledLinkedList(char *, char *);
+  ~UnrolledLinkedList();
+
+  void Insert(const key_t &, const val_t &);
+  void Delete(const key_t &, const val_t &);
+  std::vector<val_t> Find(const key_t &);
+  bool Have(const key_t &);
+  void Print(std::ostream &os);
+  bool Empty() const;
+  std::vector<pair_t> GetAll();
+
+private:
+  static const int maxBlockSize = 300;
+  static const int minBlockSize = 5;
+  static const int maxBlockIndex = 10000;
+
   struct Node {
     pair_t min_pair_;
     int size_, block_index_;
 
     Node();
-    Node(const pair_t &, int, int);
+    explicit Node(const pair_t &, int, int);
     Node(const Node &) = default;
     Node &operator=(const Node &);
   };
@@ -59,15 +72,6 @@ private:
   Iter FindInsertNode(const pair_t &);
   void Merge(Iter, Block &);
   void Split(Iter, Block &);
-
-public:
-  UnrolledLinkedList(char *, char *);
-  ~UnrolledLinkedList();
-  void Insert(const key_t &, const val_t &);
-  void Delete(const key_t &, const val_t &);
-  std::vector<val_t> Find(const key_t &);
-  bool Have(const key_t &);
-  void Print();
 };
 
 template<class key_t, class val_t>
@@ -218,7 +222,8 @@ int UnrolledLinkedList<key_t, val_t>::WriteBlock(Block &block, int block_index) 
   return block_index;
 }
 template<class key_t, class val_t>
-typename UnrolledLinkedList<key_t, val_t>::Iter UnrolledLinkedList<key_t, val_t>::FindInsertNode(const pair_t &pair) {
+typename UnrolledLinkedList<key_t, val_t>::Iter UnrolledLinkedList<key_t, val_t>::FindInsertNode(
+    const pair_t &pair) {
   Iter ans = node_list_.begin();
   if (pair < ans->min_pair_) {
     return ans;
@@ -401,7 +406,10 @@ bool UnrolledLinkedList<key_t, val_t>::Have(const key_t &key) {
   return false;
 }
 template<class key_t, class val_t>
-void UnrolledLinkedList<key_t, val_t>::Print() {
+void UnrolledLinkedList<key_t, val_t>::Print(std::ostream &os) {
+  if (Empty()) {
+    return;
+  }
   int i;
   key_t last_key = node_list_.begin()->min_pair_.key_;
   for (auto &node : node_list_) {
@@ -409,12 +417,30 @@ void UnrolledLinkedList<key_t, val_t>::Print() {
     ReadBlock(block, node.block_index_);
     for (i = 0; i < node.size_; i++) {
       if (block[i].key_ != last_key) {
-        std::cout << "\n";
+        os << "\n";
       }
-      std::cout << block[i].key_ << ": " << block[i].val_ << "\n";
+      os << block[i].key_ << ": " << block[i].val_ << "\n";
       last_key = block[i].key_;
     }
   }
+  os << "\n";
+}
+template<class key_t, class val_t>
+bool UnrolledLinkedList<key_t, val_t>::Empty() const {
+  return node_list_.empty();
+}
+template<class key_t, class val_t>
+std::vector<typename UnrolledLinkedList<key_t, val_t>::pair_t> UnrolledLinkedList<key_t, val_t>::GetAll() {
+  std::vector<pair_t> result;
+  int i;
+  for (auto &node : node_list_) {
+    Block block;
+    ReadBlock(block, node.block_index_);
+    for (i = 0; i < node.size_; i++) {
+      result.push_back(block[i]);
+    }
+  }
+  return result;
 }
 
 #endif //BOOKSTORE_2023_UNROLLEDLINKEDLIST_H

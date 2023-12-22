@@ -6,6 +6,7 @@
 #include "Tools/File.h"
 #include "Tools/String.h"
 #include "Tools/UnrolledLinkedList.h"
+#include "type_definition.h"
 
 struct FinanceInfo {
   int time_;
@@ -16,25 +17,24 @@ struct FinanceInfo {
 };
 class Log {
 public:
-  using employee_t = String<65>;
-  using instruction_t = String<280>;
-  using log_info_t = String<350>;
 
-  Log(char *, char *, char *, char *);
+  explicit Log(char *, char *, char *, char *);
 
   void PrintLogFile(std::ostream &);
   void PrintFinanceInfo(std::ostream &, int);
   void PrintFinance(std::ostream &);
   void AddFinanceInfo(FinanceInfo &);
+  FinanceInfo GetLastFinanceInfo();
   void AddLogInfo(log_info_t &);
   int GetFinanceFileLength() const;
+  void PrintEmployee(std::ostream &);
 
 private:
   static const int logReadLength = 35;
-  static const int financeReadlength = 85;
+  static const int financeReadLength = 85;
 
   File finance_file_, log_file_;
-  UnrolledLinkedList<employee_t, instruction_t> employee_map_;
+  UnrolledLinkedList<user_t, instruction_t> employee_map_;
   int finance_file_length_, log_file_length_;
 };
 

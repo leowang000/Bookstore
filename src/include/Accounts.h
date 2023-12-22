@@ -7,24 +7,20 @@
 #include "Tools/String.h"
 #include "Tools/File.h"
 #include "Tools/UnrolledLinkedList.h"
+#include "type_definition.h"
 
 class Accounts {
 public:
-  using user_id_t = String<30>;
-  using password_t = String<30>;
-  using username_t = String<30>;
-  using privilege_t = String<1>;
   struct User {
     user_id_t id_;
     password_t password_;
     username_t username_;
     privilege_t privilege_;
-    int selected_;
 
     User();
-    User(const std::string &, const std::string &, const std::string &, const std::string &);
+    explicit User(const user_id_t &, const password_t &, const username_t &, const privilege_t &);
 
-    std::string GetString();
+    user_t GetString() const;
     bool operator<(const User &) const;
     bool operator==(const User &) const;
     bool operator>(const User &) const;
@@ -33,7 +29,7 @@ public:
     bool operator!=(const User &) const;
   };
 
-  Accounts(char *, char *);
+  explicit Accounts(char *, char *);
 
   bool HaveUser(const user_id_t &);
   bool IsUserEmpty() const;
@@ -42,12 +38,16 @@ public:
   void AddUser(const User &);
   void DeleteUser(const user_id_t &);
   void ModifyPassword(const user_id_t &, const password_t &);
-
-  User *now_user_;
+  int GetNowUserPrivilege() const;
+  bool IsInstructionPrivilegeValid(int) const;
+  User GetUser(const user_id_t &);
+  void Select(int);
+  int GetSelect() const;
+  bool IsUserLoggedOn(const user_id_t &) const;
 
 private:
   UnrolledLinkedList<user_id_t, User> accounts_map_;
-  std::vector<User> users_;
+  std::vector<std::pair<User, int>> users_;
 };
 
 #endif //BOOKSTORE_2023_USER_H

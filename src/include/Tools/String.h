@@ -18,7 +18,9 @@ public:
   String(const String<len> &);
   String(const char *);
   String(const std::string &);
-  String<len> &operator=(const String<len> &);
+  explicit String(int);
+  explicit String(const long double &, int);
+  String &operator=(const String<len> &);
 
   char &operator[](int);
   bool operator<(const String<len> &) const;
@@ -29,11 +31,13 @@ public:
   bool operator!=(const String<len> &) const;
   friend std::ostream &operator<<<len>(std::ostream &, const String<len> &);
   friend std::istream &operator>><len>(std::istream &, String<len> &);
-  int ToInt();
-  double ToDouble(int);
-  std::string GetString(int precision = -1);
+  int ToInt() const;
+  double ToDouble(int) const;
+  std::string GetString(int precision = -1) const;
   std::string ToString() const;
   bool Empty() const;
+  void Write(const std::string &, int);
+  void Write(int, int);
 
 private:
   char str_[len + 1];
@@ -67,6 +71,18 @@ String<len>::String(const char *other) {
 }
 template<int len>
 String<len>::String(const std::string &other) : String(other.c_str()) {}
+template<int len>
+String<len>::String(int other) {
+  std::stringstream str;
+  str << other;
+  strcpy(str_, str.str().c_str());
+}
+template<int len>
+String<len>::String(const long double &other, int precision) {
+  std::stringstream str;
+  str << std::fixed << std::setprecision(precision) << other;
+  strcpy(str_, str.str().c_str());
+}
 template<int len>
 String<len> &String<len>::operator=(const String<len> &other) {
   if (this == &other) {
@@ -121,7 +137,7 @@ std::istream &operator>>(std::istream &is, String<len> &str) {
   return is;
 }
 template<int len>
-int String<len>::ToInt() {
+int String<len>::ToInt() const {
   int i, result = 0;
   for (i = 0; str_[i] != '\0'; i++) {
     result = result * 10 + str_[i] - '0';
@@ -129,7 +145,7 @@ int String<len>::ToInt() {
   return result;
 }
 template<int len>
-double String<len>::ToDouble(int precision) {
+double String<len>::ToDouble(int precision) const {
   int i, j;
   double result = 0, base = 1;
   for (i = 0; str_[i] != '.' && i < strlen(str_); i++) {
@@ -145,7 +161,7 @@ double String<len>::ToDouble(int precision) {
   return result;
 }
 template<int len>
-std::string String<len>::GetString(int precision) {
+std::string String<len>::GetString(int precision) const {
   if (precision == -1) {
     std::string result(str_);
     while (result.length() < len) {
@@ -169,6 +185,18 @@ std::string String<len>::ToString() const {
 template<int len>
 bool String<len>::Empty() const {
   return str_[0] == '\0';
+}
+template<int len>
+void String<len>::Write(const std::string &data, int bias) {
+  if (bias > 0) {
+    strcpy(str_ + bias, data.c_str());
+    return;
+  }
+  strcpy(str_ + len - bias, data.c_str());
+}
+template<int len>
+void String<len>::Write(int data, int bias) {
+  Write(std::to_string(data), bias);
 }
 
 #endif //BOOKSTORE_2023_STRING_H

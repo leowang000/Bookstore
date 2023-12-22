@@ -136,10 +136,13 @@ std::string ReadDouble(std::istream &is, bool is_end_of_line) {
   return result;
 }
 std::vector<std::string> ParseKeywords(const std::string &keywords) {
+  std::vector<std::string> result;
+  if (keywords.empty()) {
+    return result;
+  }
   if (keywords.back() == '|') {
     throw ErrorException("INVALID INPUT FORMAT");
   }
-  std::vector<std::string> result;
   int i = 0;
   while (i < keywords.length()) {
     std::string word;

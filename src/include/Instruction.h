@@ -3,186 +3,243 @@
 
 #include <string>
 
+#include "Accounts.h"
+#include "Books.h"
+#include "Log.h"
+#include "type_definition.h"
+
 class Instruction {
 public:
-  int privilege_;
+  int time_;
 
-  virtual void Execute() = 0;
-  virtual void CheckParameter() = 0;
-  virtual std::string GetString() = 0;
+  Instruction();
+  explicit Instruction(int);
+
+  virtual void Execute(Accounts &, Books &, Log &) = 0;
+  virtual void CheckParameter(Accounts &, Books &, Log &) = 0;
+  virtual void CheckPrivilege(Accounts &) = 0;
+  virtual instruction_t GetString() const = 0;
 };
 class QuitInst : public Instruction {
 public:
-  QuitInst();
+  static const int instructionPrivilege = 0;
 
-  void Execute();
-  void CheckParameter();
-  std::string GetString();
+  explicit QuitInst(int, const std::string &);
+
+  void Execute(Accounts &, Books &, Log &);
+  void CheckParameter(Accounts &, Books &, Log &);
+  void CheckPrivilege(Accounts &);
+  instruction_t GetString() const;
 
 private:
-
+  bool is_quit;
 };
 class SuInst : public Instruction {
 public:
-  SuInst();
+  static const int instructionPrivilege = 0;
 
-  void Execute();
-  void CheckParameter();
-  std::string GetString();
+  explicit SuInst(int, const std::string &, const std::string &);
+
+  void Execute(Accounts &, Books &, Log &);
+  void CheckParameter(Accounts &, Books &, Log &);
+  void CheckPrivilege(Accounts &);
+  instruction_t GetString() const;
 
 private:
-
+  user_id_t user_id_;
+  password_t password_;
 };
 class LogoutInst : public Instruction {
 public:
-  LogoutInst();
+  static const int instructionPrivilege = 1;
 
-  void Execute();
-  void CheckParameter();
-  std::string GetString();
+  explicit LogoutInst(int);
 
-private:
-
+  void Execute(Accounts &, Books &, Log &);
+  void CheckParameter(Accounts &, Books &, Log &);
+  void CheckPrivilege(Accounts &);
+  instruction_t GetString() const;
 };
 class RegisterInst : public Instruction {
 public:
-  RegisterInst();
+  static const int instructionPrivilege = 0;
 
-  void Execute();
-  void CheckParameter();
-  std::string GetString();
+  explicit RegisterInst(int, const user_id_t &, const password_t &, const username_t &);
+
+  void Execute(Accounts &, Books &, Log &);
+  void CheckParameter(Accounts &, Books &, Log &);
+  void CheckPrivilege(Accounts &);
+  instruction_t GetString() const;
 
 private:
-
+  user_id_t user_id_;
+  password_t password_;
+  username_t username_;
 };
 class PasswdInst : public Instruction {
 public:
-  PasswdInst();
+  static const int instructionPrivilege = 1;
 
-  void Execute();
-  void CheckParameter();
-  std::string GetString();
+  explicit PasswdInst(int, const user_id_t &, const password_t &, const password_t &);
+
+  void Execute(Accounts &, Books &, Log &);
+  void CheckParameter(Accounts &, Books &, Log &);
+  void CheckPrivilege(Accounts &);
+  instruction_t GetString() const;
 
 private:
+  user_id_t user_id_;
+  password_t current_password_, new_password_;
+};
+class UserAddInst : public Instruction {
+public:
+  static const int instructionPrivilege = 3;
 
+  explicit UserAddInst(int, const user_id_t &, const password_t &, const privilege_t &, const username_t &);
+
+  void Execute(Accounts &, Books &, Log &);
+  void CheckParameter(Accounts &, Books &, Log &);
+  void CheckPrivilege(Accounts &);
+  instruction_t GetString() const;
+
+private:
+  user_id_t user_id_;
+  password_t password_;
+  privilege_t privilege_;
+  username_t username_;
 };
 class DeleteInst : public Instruction {
 public:
-  DeleteInst();
+  static const int instructionPrivilege = 7;
 
-  void Execute();
-  void CheckParameter();
-  std::string GetString();
+  explicit DeleteInst(int, const user_id_t &);
+
+  void Execute(Accounts &, Books &, Log &);
+  void CheckParameter(Accounts &, Books &, Log &);
+  void CheckPrivilege(Accounts &);
+  instruction_t GetString() const;
 
 private:
-
+  user_id_t user_id_;
 };
 class ShowInst : public Instruction {
 public:
-  ShowInst();
+  static const int instructionPrivilege = 1;
 
-  void Execute();
-  void CheckParameter();
-  std::string GetString();
+  explicit ShowInst(int, const Books::Book &);
+
+  void Execute(Accounts &, Books &, Log &);
+  void CheckParameter(Accounts &, Books &, Log &);
+  void CheckPrivilege(Accounts &);
+  instruction_t GetString() const;
 
 private:
-
+  Books::Book search_index_;
 };
 class BuyInst : public Instruction {
 public:
-  BuyInst();
+  static const int instructionPrivilege = 1;
 
-  void Execute();
-  void CheckParameter();
-  std::string GetString();
+  explicit BuyInst(int, const ISBN_t &, const quantity_t &);
+
+  void Execute(Accounts &, Books &, Log &);
+  void CheckParameter(Accounts &, Books &, Log &);
+  void CheckPrivilege(Accounts &);
+  instruction_t GetString() const;
 
 private:
-
+  ISBN_t ISBN_;
+  quantity_t quantity_;
 };
 class SelectInst : public Instruction {
 public:
-  SelectInst();
+  static const int instructionPrivilege = 3;
 
-  void Execute();
-  void CheckParameter();
-  std::string GetString();
+  explicit SelectInst(int, const ISBN_t &);
+
+  void Execute(Accounts &, Books &, Log &);
+  void CheckParameter(Accounts &, Books &, Log &);
+  void CheckPrivilege(Accounts &);
+  instruction_t GetString() const;
 
 private:
-
+  ISBN_t ISBN_;
 };
 class ModifyInst : public Instruction {
 public:
-  ModifyInst();
+  static const int instructionPrivilege = 3;
 
-  void Execute();
-  void CheckParameter();
-  std::string GetString();
+  explicit ModifyInst(int, const Books::Book &);
+
+  void Execute(Accounts &, Books &, Log &);
+  void CheckParameter(Accounts &, Books &, Log &);
+  void CheckPrivilege(Accounts &);
+  instruction_t GetString() const;
 
 private:
-
+  Books::Book modification_;
 };
 class ImportInst : public Instruction {
 public:
-  ImportInst();
+  static const int instructionPrivilege = 3;
 
-  void Execute();
-  void CheckParameter();
-  std::string GetString();
+  explicit ImportInst(int, const quantity_t &, const price_t &);
+
+  void Execute(Accounts &, Books &, Log &);
+  void CheckParameter(Accounts &, Books &, Log &);
+  void CheckPrivilege(Accounts &);
+  instruction_t GetString() const;
 
 private:
-
+  quantity_t quantity_;
+  price_t cost_;
 };
 class ShowFinanceInst : public Instruction {
 public:
-  ShowFinanceInst();
+  static const int instructionPrivilege = 7;
 
-  void Execute();
-  void CheckParameter();
-  std::string GetString();
+  explicit ShowFinanceInst(int, const count_t &);
+
+  void Execute(Accounts &, Books &, Log &);
+  void CheckParameter(Accounts &, Books &, Log &);
+  void CheckPrivilege(Accounts &);
+  instruction_t GetString() const;
 
 private:
-
+  count_t count_;
 };
 class ReportFinanceInst : public Instruction {
 public:
-  ReportFinanceInst();
+  static const int instructionPrivilege = 7;
 
-  void Execute();
-  void CheckParameter();
-  std::string GetString();
+  explicit ReportFinanceInst(int);
 
-private:
-
+  void Execute(Accounts &, Books &, Log &);
+  void CheckParameter(Accounts &, Books &, Log &);
+  void CheckPrivilege(Accounts &);
+  instruction_t GetString() const;
 };
 class ReportEmployeeInst : public Instruction {
 public:
-  ReportEmployeeInst();
+  static const int instructionPrivilege = 7;
 
-  void Execute();
-  void CheckParameter();
-  std::string GetString();
+  explicit ReportEmployeeInst(int);
 
-private:
-
+  void Execute(Accounts &, Books &, Log &);
+  void CheckParameter(Accounts &, Books &, Log &);
+  void CheckPrivilege(Accounts &);
+  instruction_t GetString() const;
 };
 class LogInst : public Instruction {
 public:
-  LogInst();
+  static const int instructionPrivilege = 7;
 
-  void Execute();
-  void CheckParameter();
-  std::string GetString();
+  explicit LogInst(int);
 
-private:
-
-};
-class SuInstruction : public Instruction {
-public:
-  SuInstruction();
-
-  void Execute();
-  void CheckParameter();
-  std::string GetString();
+  void Execute(Accounts &, Books &, Log &);
+  void CheckParameter(Accounts &, Books &, Log &);
+  void CheckPrivilege(Accounts &);
+  instruction_t GetString() const;
 
 private:
 

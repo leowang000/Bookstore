@@ -7,17 +7,12 @@
 #include "Tools/String.h"
 #include "Tools/UnrolledLinkedList.h"
 #include "Tools/File.h"
+#include "type_definition.h"
 
 class Books {
 public:
-  using ISBN_t = String<20>;
-  using book_name_t = String<60>;
-  using author_t = String<60>;
-  using keyword_t = String<60>;
-  using quantity_t = String<10>;
-  using price_t = String<13>;
   struct Book {
-    Book(const std::string &ISBN = "", const std::string &book_name = "", const std::string &author = "",
+    explicit Book(const std::string &ISBN = "", const std::string &book_name = "", const std::string &author = "",
          const std::string &keyword = "", const std::string &quantity = "0", const std::string &price = "0");
 
     ISBN_t ISBN_;
@@ -30,19 +25,8 @@ public:
 
     std::string GetString();
   };
-  struct Modification {
-    ISBN_t ISBN_;
-    book_name_t book_name_;
-    author_t author_;
-    keyword_t keyword_;
-    quantity_t quantity_;
-    price_t price_;
 
-    Modification(const std::string &ISBN = "", const std::string &book_name = "", const std::string &author = "",
-                 const std::string &key_word = "", const std::string &quantity = "", const std::string &price = "");
-  };
-
-  Books(char *, char *, char *, char *, char *, char *, char *, char *, char *);
+  explicit Books(char *, char *, char *, char *, char *, char *, char *, char *, char *);
 
   std::vector<int> FindByISBN(const ISBN_t &);
   std::vector<int> FindByBookName(const book_name_t &);
@@ -52,8 +36,12 @@ public:
   bool HaveBookName(const book_name_t &);
   bool HaveAuthor(const author_t &);
   bool HaveKeyword(const keyword_t &);
-  void Modify(const Modification &, int);
-  void AddBook(Book &);
+  void Modify(Book &, int);
+  int AddBook(Book &);
+  void PrintBookFile(std::ostream &);
+  void PrintBooks(std::ostream &, const std::vector<int> &);
+  Book GetBook(const ISBN_t &);
+  Book GetBook(int);
 
 private:
   void ReadBook(Book &, int);
