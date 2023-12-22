@@ -60,7 +60,7 @@ void ReadFormat(std::istream &is, const std::string &format) {
   }
 }
 std::string ReadString(std::istream &is, bool number, bool letter, bool underline, bool quotes, bool other_print,
-                       bool have_quotes, bool end, bool could_be_empty, bool is_end_of_line) {
+                       bool is_end_of_line, bool have_quotes, bool end, bool could_be_empty) {
   std::string result;
   char c;
   if (have_quotes) {
@@ -86,7 +86,10 @@ std::string ReadString(std::istream &is, bool number, bool letter, bool underlin
   };
   while (true) {
     c = is.get();
-    if (!is || c == '\r' || c == '\n') {
+    if (!is) {
+      break;
+    }
+    if (c == '\r' || c == '\n') {
       is.unget();
       break;
     }
@@ -119,7 +122,7 @@ std::string ReadString(std::istream &is, bool number, bool letter, bool underlin
   return result;
 }
 std::string ReadDouble(std::istream &is, bool is_end_of_line) {
-  std::string result(ReadString(is, true, false, false, false, false, false, false, true, false));
+  std::string result(ReadString(is, true, false, false, false, false, false, false, false, true));
   if (IsTokenEnd(is)) {
     return result;
   }
@@ -128,7 +131,7 @@ std::string ReadDouble(std::istream &is, bool is_end_of_line) {
     throw ErrorException("INVALID INPUT FORMAT");
   }
   result.push_back('.');
-  std::string decimal(ReadString(is, true, false, false, false, false, false, true, true, is_end_of_line));
+  std::string decimal(ReadString(is, true, false, false, false, false, is_end_of_line, false, true, true));
   if (result == "." && decimal.empty()) {
     throw ErrorException("INVALID INPUT FORMAT");
   }

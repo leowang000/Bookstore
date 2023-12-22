@@ -28,6 +28,7 @@ public:
   void AddLogInfo(log_info_t &);
   int GetFinanceFileLength() const;
   void PrintEmployee(std::ostream &);
+  void AddEmployeeInfo(const user_t &, const instruction_t &);
 
 private:
   static const int logReadLength = 35;

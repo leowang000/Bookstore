@@ -15,10 +15,10 @@ public:
   Instruction();
   explicit Instruction(int);
 
-  virtual void Execute(Accounts &, Books &, Log &) = 0;
-  virtual void CheckParameter(Accounts &, Books &, Log &) = 0;
-  virtual void CheckPrivilege(Accounts &) = 0;
-  virtual instruction_t GetString() const = 0;
+  virtual void Execute(Accounts &, Books &, Log &);
+  virtual void CheckParameter(Accounts &, Books &, Log &);
+  virtual void CheckPrivilege(Accounts &);
+  virtual instruction_t GetString() const;
 };
 class QuitInst : public Instruction {
 public:

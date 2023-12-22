@@ -63,6 +63,12 @@ void Accounts::ModifyPassword(const user_id_t &user_id, const password_t &new_pa
 int Accounts::GetNowUserPrivilege() const {
   return users_.empty() ? 0 : users_.back().first.privilege_.ToInt();
 }
+user_t Accounts::GetNowUserString() const {
+  if (!users_.empty()) {
+    return users_.back().first.GetString();
+  }
+  return user_id_t().GetString() + " {0} " + username_t().GetString();
+}
 bool Accounts::IsInstructionPrivilegeValid(int privilege) const {
   return GetNowUserPrivilege() >= privilege;
 }

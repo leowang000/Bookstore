@@ -6,32 +6,22 @@
 #include "Books.h"
 #include "Log.h"
 #include "type_definition.h"
+#include "Tools/read_string.h"
 
-class Instruction;
-class Accounts;
-class Books;
-class Log;
 class BookStore {
 public:
-  friend Instruction;
-  friend Accounts;
-  friend Books;
-  friend Log;
-
   explicit BookStore(char *, char *, char *, char *, char *, char *, char *, char *, char *, char *, char *, char *, char *,
             char *, char *);
-  ~BookStore();
 
   void GetInstruction();
+  void CheckInstruction();
   void ExecuteInstruction();
 
-private:
+  int time_;
   Accounts accounts_;
   Books books_;
   Log log_;
   Instruction *inst_;
-
-  void GetLogInfo();
 };
 
 #endif //BOOKSTORE_2023_BOOKSTORE_H

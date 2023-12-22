@@ -10,8 +10,8 @@ void SkipSpaces(std::istream &);
 bool ReadLine(std::istream &);
 bool IsEndOfLine(std::istream &);
 void ReadFormat(std::istream &, const std::string &);
-std::string ReadString(std::istream &, bool, bool, bool, bool, bool, bool, bool end = true, bool could_be_empty = false,
-                       bool is_end_of_line = false);
+std::string ReadString(std::istream &, bool, bool, bool, bool, bool, bool is_end_of_line = false,
+                       bool have_quotes = false, bool end = true, bool could_be_empty = false);
 std::string ReadDouble(std::istream &, bool is_end_of_line = false); // precision >= 1
 std::vector<std::string> ParseKeywords(const std::string &);
 

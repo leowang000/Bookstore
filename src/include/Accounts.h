@@ -39,6 +39,7 @@ public:
   void DeleteUser(const user_id_t &);
   void ModifyPassword(const user_id_t &, const password_t &);
   int GetNowUserPrivilege() const;
+  user_t GetNowUserString() const;
   bool IsInstructionPrivilegeValid(int) const;
   User GetUser(const user_id_t &);
   void Select(int);

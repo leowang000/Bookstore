@@ -18,7 +18,7 @@ public:
   String(const String<len> &);
   String(const char *);
   String(const std::string &);
-  explicit String(int);
+  explicit String(long long);
   explicit String(const long double &, int);
   String &operator=(const String<len> &);
 
@@ -32,6 +32,7 @@ public:
   friend std::ostream &operator<<<len>(std::ostream &, const String<len> &);
   friend std::istream &operator>><len>(std::istream &, String<len> &);
   int ToInt() const;
+  long long ToLongLong() const;
   double ToDouble(int) const;
   std::string GetString(int precision = -1) const;
   std::string ToString() const;
@@ -61,7 +62,7 @@ String<len>::String(const String<len> &other) {
 template<int len>
 String<len>::String(const char *other) {
   if (strlen(other) > len) {
-    throw ErrorException("STRING TOO LONG");
+    throw ErrorException("INVALID INPUT FORMAT");
   }
   int i;
   strcpy(str_, other);
@@ -72,7 +73,7 @@ String<len>::String(const char *other) {
 template<int len>
 String<len>::String(const std::string &other) : String(other.c_str()) {}
 template<int len>
-String<len>::String(int other) {
+String<len>::String(long long other) {
   std::stringstream str;
   str << other;
   strcpy(str_, str.str().c_str());
@@ -139,6 +140,15 @@ std::istream &operator>>(std::istream &is, String<len> &str) {
 template<int len>
 int String<len>::ToInt() const {
   int i, result = 0;
+  for (i = 0; str_[i] != '\0'; i++) {
+    result = result * 10 + str_[i] - '0';
+  }
+  return result;
+}
+template<int len>
+long long String<len>::ToLongLong() const {
+  int i;
+  long long result = 0;
   for (i = 0; str_[i] != '\0'; i++) {
     result = result * 10 + str_[i] - '0';
   }

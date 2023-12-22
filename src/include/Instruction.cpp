@@ -3,6 +3,12 @@
 
 Instruction::Instruction() : time_(-1) {}
 Instruction::Instruction(int time) : time_(time) {}
+void Instruction::Execute(Accounts &accounts, Books &books, Log &log) {}
+void Instruction::CheckParameter(Accounts &accounts, Books &books, Log &log) {}
+void Instruction::CheckPrivilege(Accounts &accounts) {}
+instruction_t Instruction::GetString() const {
+  return { "null" };
+}
 QuitInst::QuitInst(int time, const std::string &op) : Instruction(time), is_quit(op == "quit") {}
 void QuitInst::Execute(Accounts &accounts, Books &books, Log &log) {
   exit(0);
@@ -198,8 +204,8 @@ BuyInst::BuyInst(int time, const ISBN_t &ISBN, const quantity_t &quantity)
     : Instruction(time), ISBN_(ISBN), quantity_(quantity) {}
 void BuyInst::Execute(Accounts &accounts, Books &books, Log &log) {
   Books::Book book(books.GetBook(ISBN_));
-  long double income = book.price_.ToDouble(2) * quantity_.ToInt();
-  book.quantity_ = quantity_t(book.quantity_.ToInt() - quantity_.ToInt());
+  long double income = book.price_.ToDouble(2) * quantity_.ToLongLong();
+  book.quantity_ = quantity_t(book.quantity_.ToLongLong() - quantity_.ToLongLong());
   books.Modify(book, books.FindByISBN(ISBN_).front());
   std::cout << std::fixed << std::setprecision(2) << income << "\n";
   FinanceInfo finance_info(log.GetLastFinanceInfo());
@@ -211,7 +217,8 @@ void BuyInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {
   if (!books.HaveISBN(ISBN_)) {
     throw ErrorException("ISBN DOESN'T EXIST");
   }
-  if (quantity_.ToInt() == 0 || quantity_.ToInt() > books.GetBook(ISBN_).quantity_.ToInt()) {
+  if (quantity_.ToLongLong() == 0 || quantity_.ToLongLong() > 2147483647ll ||
+  quantity_.ToLongLong() > books.GetBook(ISBN_).quantity_.ToLongLong()) {
     throw ErrorException("INVALID QUANTITY");
   }
 }
@@ -278,7 +285,7 @@ ImportInst::ImportInst(int time, const quantity_t &quantity, const price_t &cost
     : Instruction(time), quantity_(quantity), cost_(cost) {}
 void ImportInst::Execute(Accounts &accounts, Books &books, Log &log) {
   Books::Book book(books.GetBook(accounts.GetSelect()));
-  book.quantity_ = quantity_t(book.quantity_.ToInt() + quantity_.ToInt());
+  book.quantity_ = quantity_t(book.quantity_.ToLongLong() + quantity_.ToLongLong());
   books.Modify(book, books.FindByISBN(book.ISBN_).front());
   FinanceInfo finance_info(log.GetLastFinanceInfo());
   finance_info.time_ = time_;
@@ -289,7 +296,7 @@ void ImportInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {
   if (accounts.GetSelect() == -1) {
     throw ErrorException("NO BOOK SELECTED");
   }
-  if (quantity_.ToInt() == 0) {
+  if (quantity_.ToLongLong() == 0 || quantity_.ToLongLong() > 2147483647ll) {
     throw ErrorException("INVALID QUANTITY");
   }
   if (cost_.ToDouble(2) == 0) {
@@ -309,7 +316,7 @@ void ShowFinanceInst::Execute(Accounts &accounts, Books &books, Log &log) {
   log.PrintFinanceInfo(std::cout, (count_.Empty() ? -1 : count_.ToInt()));
 }
 void ShowFinanceInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {
-  if (count_.ToInt() > log.GetFinanceFileLength()) {
+  if (count_.ToLongLong() > 2147483647ll || count_.ToInt() > log.GetFinanceFileLength()) {
     throw ErrorException("INVALID COUNT");
   }
 }

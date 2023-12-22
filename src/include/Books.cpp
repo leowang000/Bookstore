@@ -7,7 +7,7 @@ Books::Book::Book(const std::string &ISBN, const std::string &book_name, const s
     keywords_(ParseKeywords(keyword)) {}
 std::string Books::Book::GetString() {
   return ISBN_.GetString() + "\t" + book_name_.GetString() + "\t" + author_.GetString() + "\t" + keyword_.GetString() +
-  "\t" +  price_.GetString(2) + "\t" + quantity_.GetString(0);
+  "\t" +  price_.GetString(2) + "\t" + quantity_.GetString();
 }
 Books::Books(char *book_file_name, char *ISBN_data_file_name, char *ISBN_node_file_name,
              char *book_name_data_file_name, char *book_name_node_file_name, char *author_data_file_name,

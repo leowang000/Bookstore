@@ -107,3 +107,6 @@ void Log::PrintEmployee(std::ostream &os) {
   employee_map_.Print(os);
   os << "----------EMPLOYEE END----------\n";
 }
+void Log::AddEmployeeInfo(const user_t &user_str, const instruction_t &instruction_str) {
+  employee_map_.Insert(user_str, instruction_str);
+}
