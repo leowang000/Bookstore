@@ -33,6 +33,7 @@ private:
   Instruction *inst_;
 
   void CheckPrivilege();
+  void GetLogInfo();
 };
 
 #endif //BOOKSTORE_2023_BOOKSTORE_H
