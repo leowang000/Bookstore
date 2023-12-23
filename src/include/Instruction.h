@@ -10,15 +10,15 @@
 
 class Instruction {
 public:
-  int time_;
-
-  Instruction();
   explicit Instruction(int);
 
   virtual void Execute(Accounts &, Books &, Log &);
   virtual void CheckParameter(Accounts &, Books &, Log &);
   virtual void CheckPrivilege(Accounts &);
   virtual instruction_t GetString() const;
+
+protected:
+  system_time_t time_;
 };
 class QuitInst : public Instruction {
 public:
@@ -240,9 +240,6 @@ public:
   void CheckParameter(Accounts &, Books &, Log &);
   void CheckPrivilege(Accounts &);
   instruction_t GetString() const;
-
-private:
-
 };
 
 #endif //BOOKSTORE_2023_INSTRUCTION_H

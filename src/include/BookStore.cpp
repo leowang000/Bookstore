@@ -9,65 +9,65 @@ BookStore::BookStore(char *account_data_file_name, char *account_node_file_name,
     books_(book_file_name, ISBN_data_file_name, ISBN_node_file_name, book_name_data_file_name, book_name_node_file_name,
            author_data_file_name, author_node_file_name, keyword_data_file_name, keyword_node_file_name),
     log_(finance_file_name, log_file_name, employee_data_file_name, employee_node_file_name) {}
-void BookStore::GetInstruction() {
-  SkipSpaces(std::cin);
-  if (IsEndOfLine(std::cin)) {
+void BookStore::GetInstruction(const std::string &in) {
+  std::istringstream input(in);
+  SkipSpaces(input);
+  if (IsEndOfLine(input)) {
     inst_ = new Instruction(time_);
-    ReadLine(std::cin);
     return;
   }
   try {
-    std::string op = ReadString(std::cin, false, true, false, false, false);
+    std::string op = ReadString(input, false, true, false, false, false);
     if (op == "quit" || op == "exit") {
-      if (!IsEndOfLine(std::cin)) {
+      if (!IsEndOfLine(input)) {
         throw ErrorException("INVALID INPUT FORMAT");
       }
       inst_ = new QuitInst(time_, op);
     }
     else if (op == "su") {
-      std::string user_id(ReadString(std::cin, true, true, true, false, false));
-      std::string password(IsEndOfLine(std::cin) ? "" : ReadString(std::cin, true, true, true, false, false, true));
+      std::string user_id(ReadString(input, true, true, true, false, false));
+      std::string password(IsEndOfLine(input) ? "" : ReadString(input, true, true, true, false, false, true));
       inst_ = new SuInst(time_, user_id, password);
     }
     else if (op == "logout") {
-      if (!IsEndOfLine(std::cin)) {
+      if (!IsEndOfLine(input)) {
         throw ErrorException("INVALID INPUT FORMAT");
       }
       inst_ = new LogoutInst(time_);
     }
     else if (op == "register") {
-      std::string user_id(ReadString(std::cin, true, true, true, false, false));
-      std::string password(ReadString(std::cin, true, true, true, false, false));
-      std::string username(ReadString(std::cin, true, true, true, true, true, true));
+      std::string user_id(ReadString(input, true, true, true, false, false));
+      std::string password(ReadString(input, true, true, true, false, false));
+      std::string username(ReadString(input, true, true, true, true, true, true));
       inst_ = new RegisterInst(time_, user_id, password, username);
     }
     else if (op == "passwd") {
-      std::string user_id(ReadString(std::cin, true, true, true, false, false));
-      std::string password(ReadString(std::cin, true, true, true, false, false));
-      if (IsEndOfLine(std::cin)) {
+      std::string user_id(ReadString(input, true, true, true, false, false));
+      std::string password(ReadString(input, true, true, true, false, false));
+      if (IsEndOfLine(input)) {
         inst_ = new PasswdInst(time_, user_id, "", password);
       }
       else {
-        std::string new_password(ReadString(std::cin, true, true, true, false, false, true));
+        std::string new_password(ReadString(input, true, true, true, false, false, true));
         inst_ = new PasswdInst(time_, user_id, password, new_password);
       }
     }
     else if (op == "useradd") {
-      std::string user_id(ReadString(std::cin, true, true, true, false, false));
-      std::string password(ReadString(std::cin, true, true, true, false, false));
-      std::string privilege(ReadString(std::cin, true, false, false, false, false));
-      std::string username(ReadString(std::cin, true, true, true, true, true, true));
+      std::string user_id(ReadString(input, true, true, true, false, false));
+      std::string password(ReadString(input, true, true, true, false, false));
+      std::string privilege(ReadString(input, true, false, false, false, false));
+      std::string username(ReadString(input, true, true, true, true, true, true));
       inst_ = new UserAddInst(time_, user_id, password, privilege, username);
     }
     else if (op == "delete") {
-      std::string user_id(ReadString(std::cin, true, true, true, false, false, true));
+      std::string user_id(ReadString(input, true, true, true, false, false, true));
       inst_ = new DeleteInst(time_, user_id);
     }
     else if (op == "show") {
-      std::stringstream info(ReadString(std::cin, true, true, true, true, true, true));
+      std::stringstream info(ReadString(input, true, true, true, true, true, true));
       Books::Book show_index;
       char buffer[10];
-      if (!IsEndOfLine(std::cin)) {
+      if (!IsEndOfLine(input)) {
         if (info.str().substr(0, 6) == "-ISBN=") {
           info.read(buffer, 6);
           show_index.ISBN_ = ReadString(info, true, true, true, true, true, true);
@@ -91,23 +91,23 @@ void BookStore::GetInstruction() {
       inst_ = new ShowInst(time_, show_index);
     }
     else if (op == "buy") {
-      std::string ISBN(ReadString(std::cin, true, true, true, true, true));
-      std::string quantity(ReadString(std::cin, true, false, false, false, false, true));
+      std::string ISBN(ReadString(input, true, true, true, true, true));
+      std::string quantity(ReadString(input, true, false, false, false, false, true));
       quantity_input_t test(quantity);
       inst_ = new BuyInst(time_, ISBN, quantity);
     }
     else if (op == "select") {
-      std::string ISBN(ReadString(std::cin, true, true, true, true, true, true));
+      std::string ISBN(ReadString(input, true, true, true, true, true, true));
       inst_ = new SelectInst(time_, ISBN);
     }
     else if (op == "modify") {
       Books::Book modification;
       char buffer[10];
-      if (IsEndOfLine(std::cin)) {
+      if (IsEndOfLine(input)) {
         throw ErrorException("INVALID INPUT FORMAT");
       }
-      while (!IsEndOfLine(std::cin)) {
-        std::stringstream info(ReadString(std::cin, true, true, true, true, true, true));
+      while (!IsEndOfLine(input)) {
+        std::stringstream info(ReadString(input, true, true, true, true, true, true));
         if (info.str().substr(0, 6) == "-ISBN=") {
           if (!modification.ISBN_.Empty()) {
             throw ErrorException("INVALID INPUT FORMAT");
@@ -145,29 +145,29 @@ void BookStore::GetInstruction() {
       inst_ = new ModifyInst(time_, modification);
     }
     else if (op == "import") {
-      std::string quantity(ReadString(std::cin, true, false, false, false, false));
-      std::string cost(ReadDouble(std::cin, true));
+      std::string quantity(ReadString(input, true, false, false, false, false));
+      std::string cost(ReadDouble(input, true));
       quantity_input_t test(quantity);
       inst_ = new ImportInst(time_, quantity, cost);
     }
     else if (op == "show") {
-      if (!IsEndOfLine(std::cin)) {
+      if (!IsEndOfLine(input)) {
         throw ErrorException("INVALID INPUT FORMAT");
       }
-      std::string tmp(ReadString(std::cin, false, true, false, false, false));
+      std::string tmp(ReadString(input, false, true, false, false, false));
       if (tmp != "finance") {
         throw ErrorException("INVALID INPUT FORMAT");
       }
-      if (IsEndOfLine(std::cin)) {
+      if (IsEndOfLine(input)) {
         inst_ = new ShowFinanceInst(time_, "");
       }
       else {
-        std::string count(ReadString(std::cin, true, false, false, false, false, true));
+        std::string count(ReadString(input, true, false, false, false, false, true));
         inst_ = new ShowFinanceInst(time_, count);
       }
     }
     else if (op == "report") {
-      std::string tmp(ReadString(std::cin, false, true, false, false, false, true));
+      std::string tmp(ReadString(input, false, true, false, false, false, true));
       if (tmp == "finance") {
         inst_ = new ReportFinanceInst(time_);
       }
@@ -179,7 +179,7 @@ void BookStore::GetInstruction() {
       }
     }
     else if (op == "log") {
-      if (!IsEndOfLine(std::cin)) {
+      if (!IsEndOfLine(input)) {
         throw ErrorException("INVALID INPUT FORMAT");
       }
       inst_ = new LogInst(time_);
@@ -187,25 +187,34 @@ void BookStore::GetInstruction() {
     else {
       throw ErrorException("INVALID INPUT FORMAT");
     }
-    ReadLine(std::cin);
   }
   catch (ErrorException &ex) {
-    ReadLine(std::cin);
+    time_++;
+    //throw ErrorException("INVALID");
     throw ErrorException("INVALID INPUT FORMAT");
   }
 }
 void BookStore::CheckInstruction() {
-  inst_->CheckParameter(accounts_, books_, log_);
-  inst_->CheckPrivilege(accounts_);
+  try {
+    inst_->CheckParameter(accounts_, books_, log_);
+    inst_->CheckPrivilege(accounts_);
+  }
+  catch (ErrorException &ex) {
+    delete inst_;
+    time_++;
+    //throw ErrorException("INVALID");
+    throw ErrorException(ex.GetMessage());
+  }
 }
 void BookStore::ExecuteInstruction() {
   user_t now_user_str = accounts_.GetNowUserString();
   instruction_t instruction_str = inst_->GetString();
-  instruction_str.Write(time_, -6);
-  log_info_t log_info(now_user_str.GetString() + instruction_str.GetString());
+  log_info_t log_info(now_user_str.GetString() + ": " + instruction_str.GetString());
   log_.AddLogInfo(log_info);
   if (accounts_.GetNowUserPrivilege() == 3) {
     log_.AddEmployeeInfo(now_user_str, instruction_str);
   }
   inst_->Execute(accounts_, books_, log_);
+  delete inst_;
+  time_++;
 }

@@ -1,13 +1,12 @@
 #include "Instruction.h"
 #include "Tools/error.h"
 
-Instruction::Instruction() : time_(-1) {}
 Instruction::Instruction(int time) : time_(time) {}
 void Instruction::Execute(Accounts &accounts, Books &books, Log &log) {}
 void Instruction::CheckParameter(Accounts &accounts, Books &books, Log &log) {}
 void Instruction::CheckPrivilege(Accounts &accounts) {}
 instruction_t Instruction::GetString() const {
-  return { "null" };
+  return { time_.GetString() + "null" };
 }
 QuitInst::QuitInst(int time, const std::string &op) : Instruction(time), is_quit(op == "quit") {}
 void QuitInst::Execute(Accounts &accounts, Books &books, Log &log) {
@@ -20,7 +19,7 @@ void QuitInst::CheckPrivilege(Accounts &accounts) {
   }
 }
 instruction_t QuitInst::GetString() const {
-  return { is_quit ? "quit" : "exit" };
+  return { time_.GetString() + (is_quit ? "quit" : "exit") };
 }
 SuInst::SuInst(int time, const std::string &user_id, const std::string &password)
     : Instruction(time), user_id_(user_id), password_(password) {}
@@ -45,7 +44,7 @@ void SuInst::CheckPrivilege(Accounts &accounts) {
   }
 }
 instruction_t SuInst::GetString() const {
-  return { "su " + user_id_.GetString() + " " + password_.GetString() };
+  return { time_.GetString() + "su " + user_id_.GetString() + " " + password_.GetString() };
 }
 LogoutInst::LogoutInst(int time) : Instruction(time) {}
 void LogoutInst::Execute(Accounts &accounts, Books &books, Log &log) {
@@ -62,7 +61,7 @@ void LogoutInst::CheckPrivilege(Accounts &accounts) {
   }
 }
 instruction_t LogoutInst::GetString() const {
-  return { "logout" };
+  return { time_.GetString() + "logout" };
 }
 RegisterInst::RegisterInst(int time, const user_id_t &user_id, const password_t &password, const username_t &username)
     : Instruction(time), user_id_(user_id), password_(password), username_(username) {}
@@ -80,7 +79,8 @@ void RegisterInst::CheckPrivilege(Accounts &accounts) {
   }
 }
 instruction_t RegisterInst::GetString() const {
-  return { "register " + user_id_.GetString() + " " + password_.GetString() + " " + username_.GetString()};
+  return { time_.GetString() + "register " + user_id_.GetString() + " " + password_.GetString() + " " +
+      username_.GetString()};
 }
 PasswdInst::PasswdInst(int time, const user_id_t &user_id, const password_t &current_password,
                        const password_t &new_password)
@@ -106,7 +106,7 @@ void PasswdInst::CheckPrivilege(Accounts &accounts) {
   }
 }
 instruction_t PasswdInst::GetString() const {
-  return { "passwd " + user_id_.GetString() + " " +
+  return { time_.GetString() + "passwd " + user_id_.GetString() + " " +
       (current_password_ == "" ? "" : current_password_.GetString() + " ") + new_password_.GetString() };
 }
 UserAddInst::UserAddInst(int time, const user_id_t &user_id, const password_t &password, const privilege_t &privilege,
@@ -133,8 +133,8 @@ void UserAddInst::CheckPrivilege(Accounts &accounts) {
   }
 }
 instruction_t UserAddInst::GetString() const {
-  return { "useradd " + user_id_.GetString() + " " + password_.GetString() + " " + privilege_.GetString() + " " +
-      username_.GetString() };
+  return { time_.GetString() + "useradd " + user_id_.GetString() + " " + password_.GetString() + " " +
+      privilege_.GetString() + " " + username_.GetString() };
 }
 DeleteInst::DeleteInst(int time, const user_id_t &user_id) : Instruction(time), user_id_(user_id) {}
 void DeleteInst::Execute(Accounts &accounts, Books &books, Log &log) {
@@ -154,7 +154,7 @@ void DeleteInst::CheckPrivilege(Accounts &accounts) {
   }
 }
 instruction_t DeleteInst::GetString() const {
-  return { "delete " + user_id_.GetString() };
+  return { time_.GetString() + "delete " + user_id_.GetString() };
 }
 ShowInst::ShowInst(int time, const Books::Book &show_index) : Instruction(time), search_index_(show_index) {}
 void ShowInst::Execute(Accounts &accounts, Books &books, Log &log) {
@@ -185,7 +185,7 @@ void ShowInst::CheckPrivilege(Accounts &accounts) {
   }
 }
 instruction_t ShowInst::GetString() const {
-  std::string result = "show ";
+  std::string result = time_.GetString() + "show ";
   if (!search_index_.ISBN_.Empty()) {
     result += "-ISBN=" + search_index_.ISBN_.GetString();
   }
@@ -209,7 +209,7 @@ void BuyInst::Execute(Accounts &accounts, Books &books, Log &log) {
   books.Modify(book, books.FindByISBN(ISBN_).front());
   std::cout << std::fixed << std::setprecision(2) << income << "\n";
   FinanceInfo finance_info(log.GetLastFinanceInfo());
-  finance_info.time_ = time_;
+  finance_info.time_ = time_.ToInt();
   finance_info.income_ += income;
   log.AddFinanceInfo(finance_info);
 }
@@ -228,7 +228,7 @@ void BuyInst::CheckPrivilege(Accounts &accounts) {
   }
 }
 instruction_t BuyInst::GetString() const {
-  return { "buy " + ISBN_.GetString() + " " + quantity_.GetString() };
+  return { time_.GetString() + "buy " + ISBN_.GetString() + " " + quantity_.GetString() };
 }
 SelectInst::SelectInst(int time, const ISBN_t &ISBN) : Instruction(time), ISBN_(ISBN) {}
 void SelectInst::Execute(Accounts &accounts, Books &books, Log &log) {
@@ -246,7 +246,7 @@ void SelectInst::CheckPrivilege(Accounts &accounts) {
   }
 }
 instruction_t SelectInst::GetString() const {
-  return { "select " + ISBN_.GetString() };
+  return { time_.GetString() + "select " + ISBN_.GetString() };
 }
 ModifyInst::ModifyInst(int time, const Books::Book &modification) : Instruction(time), modification_(modification) {}
 void ModifyInst::Execute(Accounts &accounts, Books &books, Log &log) {
@@ -266,7 +266,7 @@ void ModifyInst::CheckPrivilege(Accounts &accounts) {
   }
 }
 instruction_t ModifyInst::GetString() const {
-  std::string result = "modify";
+  std::string result = time_.GetString() + "modify";
   if (!modification_.ISBN_.Empty()) {
     result += " -ISBN=" + modification_.ISBN_.GetString();
   }
@@ -288,7 +288,7 @@ void ImportInst::Execute(Accounts &accounts, Books &books, Log &log) {
   book.quantity_ = quantity_t(book.quantity_.ToLongLong() + quantity_.ToLongLong());
   books.Modify(book, books.FindByISBN(book.ISBN_).front());
   FinanceInfo finance_info(log.GetLastFinanceInfo());
-  finance_info.time_ = time_;
+  finance_info.time_ = time_.ToInt();
   finance_info.outcome_ += cost_.ToDouble(2);
   log.AddFinanceInfo(finance_info);
 }
@@ -309,7 +309,7 @@ void ImportInst::CheckPrivilege(Accounts &accounts) {
   }
 }
 instruction_t ImportInst::GetString() const {
-  return { "import " + quantity_.GetString() + " " + cost_.GetString(2) };
+  return { time_.GetString() + "import " + quantity_.GetString() + " " + cost_.GetString(2) };
 }
 ShowFinanceInst::ShowFinanceInst(int time, const count_t &count) : Instruction(time), count_(count) {}
 void ShowFinanceInst::Execute(Accounts &accounts, Books &books, Log &log) {
@@ -326,7 +326,7 @@ void ShowFinanceInst::CheckPrivilege(Accounts &accounts) {
   }
 }
 instruction_t ShowFinanceInst::GetString() const {
-  return { "show finance" + (count_.Empty() ? "" : " " + count_.GetString()) };
+  return { time_.GetString() + "show finance" + (count_.Empty() ? "" : " " + count_.GetString()) };
 }
 ReportFinanceInst::ReportFinanceInst(int time) : Instruction(time) {}
 void ReportFinanceInst::Execute(Accounts &accounts, Books &books, Log &log) {
@@ -339,7 +339,7 @@ void ReportFinanceInst::CheckPrivilege(Accounts &accounts) {
   }
 }
 instruction_t ReportFinanceInst::GetString() const {
-  return { "report finance" };
+  return { time_.GetString() + "report finance" };
 }
 ReportEmployeeInst::ReportEmployeeInst(int time) : Instruction(time) {}
 void ReportEmployeeInst::Execute(Accounts &accounts, Books &books, Log &log) {
@@ -352,7 +352,7 @@ void ReportEmployeeInst::CheckPrivilege(Accounts &accounts) {
   }
 }
 instruction_t ReportEmployeeInst::GetString() const {
-  return { "report employee" };
+  return { time_.GetString() + "report employee" };
 }
 LogInst::LogInst(int time) : Instruction(time) {}
 void LogInst::Execute(Accounts &accounts, Books &books, Log &log) {
@@ -365,5 +365,5 @@ void LogInst::CheckPrivilege(Accounts &accounts) {
   }
 }
 instruction_t LogInst::GetString() const {
-  return { "log" };
+  return { time_.GetString() + "log" };
 }

@@ -2,35 +2,38 @@
 #include "error.h"
 
 bool IsTokenEnd(std::istream &is){
-  char c = is.get();
-  if (!is) {
+  if (!is.good()) {
     return true;
   }
-  is.unget();
-  if (c == ' ' || c == '\r' || c == '\n') {
+  char c = is.get();
+  if (c == EOF || c == ' ' || c == '\r' || c == '\n') {
+    is.unget();
     return true;
   }
   return false;
 }
 void SkipSpaces(std::istream &is) {
+  if (!is.good()) {
+    return;
+  }
   char c;
   while (true) {
     c = is.get();
-    if (!is) {
-      return;
-    }
-    if (c != ' ') {
+    if (c == EOF || c != ' ') {
       is.unget();
       return;
     }
   }
 }
 bool ReadLine(std::istream &is) {
+  if (!is.good()) {
+    return false;
+  }
   char c;
   bool has_char = false;
   while (true) {
     c = is.get();
-    if (!is || c == '\n') {
+    if (c == EOF || c == '\n') {
       break;
     }
     has_char = (c != ' ' && c != '\r');
@@ -38,22 +41,21 @@ bool ReadLine(std::istream &is) {
   return has_char;
 }
 bool IsEndOfLine(std::istream &is) {
-  char c = is.get();
-  if (!is) {
+  if (!is.good()) {
     return true;
   }
-  is.unget();
-  return c == '\n' || c == '\r';
+  char c = is.peek();
+  return c == EOF || c == '\n' || c == '\r';
 }
 void ReadFormat(std::istream &is, const std::string &format) {
+  if (!is.good()) {
+    throw ErrorException("INVALID INPUT FORMAT");
+  }
   int i;
   char c;
   for (i = 0; i < format.length(); i++) {
     c = is.get();
-    if (!is) {
-      throw ErrorException("INVALID INPUT FORMAT");
-    }
-    if (c != format[i]) {
+    if (c == EOF || c != format[i]) {
       is.unget();
       throw ErrorException("INVALID INPUT FORMAT");
     }
@@ -61,12 +63,18 @@ void ReadFormat(std::istream &is, const std::string &format) {
 }
 std::string ReadString(std::istream &is, bool number, bool letter, bool underline, bool quotes, bool other_print,
                        bool is_end_of_line, bool have_quotes, bool end, bool could_be_empty) {
+  if (!is.good()) {
+    throw ErrorException("INVALID INPUT FORMAT");
+  }
   std::string result;
   char c;
   if (have_quotes) {
     ReadFormat(is, "\"");
   }
   auto IsCharValid = [number, letter, underline, quotes, other_print](char c)->bool {
+    if (c == ' ') {
+      return false;
+    }
     if (isdigit(c)) {
       return number;
     }
@@ -86,10 +94,7 @@ std::string ReadString(std::istream &is, bool number, bool letter, bool underlin
   };
   while (true) {
     c = is.get();
-    if (!is) {
-      break;
-    }
-    if (c == '\r' || c == '\n') {
+    if (c == EOF || c == '\r' || c == '\n') {
       is.unget();
       break;
     }
@@ -122,6 +127,9 @@ std::string ReadString(std::istream &is, bool number, bool letter, bool underlin
   return result;
 }
 std::string ReadDouble(std::istream &is, bool is_end_of_line) {
+  if (!is.good()) {
+    throw ErrorException("INVALID INPUT FORMAT");
+  }
   std::string result(ReadString(is, true, false, false, false, false, false, false, false, true));
   if (IsTokenEnd(is)) {
     return result;

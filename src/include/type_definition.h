@@ -18,5 +18,6 @@ using user_t = String<65>;
 using count_t = String<10>;
 using instruction_t = String<280>;
 using log_info_t = String<360>;
+using system_time_t = String<6>;
 
 #endif //BOOKSTORE_2023_TYPE_DEFINITION_H

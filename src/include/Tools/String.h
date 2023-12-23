@@ -37,8 +37,6 @@ public:
   std::string GetString(int precision = -1) const;
   std::string ToString() const;
   bool Empty() const;
-  void Write(const std::string &, int);
-  void Write(int, int);
 
 private:
   char str_[len + 1];
@@ -195,18 +193,6 @@ std::string String<len>::ToString() const {
 template<int len>
 bool String<len>::Empty() const {
   return str_[0] == '\0';
-}
-template<int len>
-void String<len>::Write(const std::string &data, int bias) {
-  if (bias > 0) {
-    strcpy(str_ + bias, data.c_str());
-    return;
-  }
-  strcpy(str_ + len - bias, data.c_str());
-}
-template<int len>
-void String<len>::Write(int data, int bias) {
-  Write(std::to_string(data), bias);
 }
 
 #endif //BOOKSTORE_2023_STRING_H

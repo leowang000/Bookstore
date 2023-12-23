@@ -13,7 +13,7 @@ public:
   explicit BookStore(char *, char *, char *, char *, char *, char *, char *, char *, char *, char *, char *, char *, char *,
             char *, char *);
 
-  void GetInstruction();
+  void GetInstruction(const std::string &);
   void CheckInstruction();
   void ExecuteInstruction();
 

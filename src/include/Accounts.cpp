@@ -28,7 +28,8 @@ bool Accounts::User::operator!=(const User &rhs) const {
 Accounts::Accounts(char *account_data_file_name, char *account_node_file_name)
     : accounts_map_(account_data_file_name, account_node_file_name), users_() {
   if (accounts_map_.Empty()) {
-    accounts_map_.Insert("root", User("root", "sjtu", "", "7"));
+    User root_user("root", "sjtu", "", "7");
+    accounts_map_.Insert("root", root_user);
   }
 }
 bool Accounts::HaveUser(const user_id_t &user_id) {
