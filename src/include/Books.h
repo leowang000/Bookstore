@@ -9,6 +9,20 @@
 #include "Tools/File.h"
 #include "type_definition.h"
 
+struct Line {
+  int line_num_;
+  ISBN_t ISBN_;
+
+  Line();
+  Line(int, const ISBN_t &);
+
+  bool operator<(const Line &) const;
+  bool operator==(const Line &) const;
+  bool operator>(const Line &) const;
+  bool operator<=(const Line &) const;
+  bool operator>=(const Line &) const;
+  bool operator!=(const Line &) const;
+};
 class Books {
 public:
   struct Book {
@@ -46,9 +60,9 @@ private:
   int book_cnt_;
   File book_file_;
   UnrolledLinkedList<ISBN_t, int> ISBN_map_;
-  UnrolledLinkedList<book_name_t, int> book_name_map_;
-  UnrolledLinkedList<author_t, int> author_map_;
-  UnrolledLinkedList<keyword_t, int> keyword_map_;
+  UnrolledLinkedList<book_name_t, Line> book_name_map_;
+  UnrolledLinkedList<author_t, Line> author_map_;
+  UnrolledLinkedList<keyword_t, Line> keyword_map_;
 };
 
 #endif //BOOKSTORE_2023_BOOKS_H
