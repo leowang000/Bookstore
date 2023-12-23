@@ -12,10 +12,10 @@ class Instruction {
 public:
   explicit Instruction(int);
 
-  virtual void Execute(Accounts &, Books &, Log &);
+  virtual bool Execute(Accounts &, Books &, Log &);
   virtual void CheckParameter(Accounts &, Books &, Log &);
   virtual void CheckPrivilege(Accounts &);
-  virtual instruction_t GetString() const;
+  virtual std::string GetString() const;
 
 protected:
   system_time_t time_;
@@ -26,10 +26,10 @@ public:
 
   explicit QuitInst(int, const std::string &);
 
-  void Execute(Accounts &, Books &, Log &);
+  bool Execute(Accounts &, Books &, Log &);
   void CheckParameter(Accounts &, Books &, Log &);
   void CheckPrivilege(Accounts &);
-  instruction_t GetString() const;
+  std::string GetString() const;
 
 private:
   bool is_quit;
@@ -40,10 +40,10 @@ public:
 
   explicit SuInst(int, const std::string &, const std::string &);
 
-  void Execute(Accounts &, Books &, Log &);
+  bool Execute(Accounts &, Books &, Log &);
   void CheckParameter(Accounts &, Books &, Log &);
   void CheckPrivilege(Accounts &);
-  instruction_t GetString() const;
+  std::string GetString() const;
 
 private:
   user_id_t user_id_;
@@ -55,10 +55,10 @@ public:
 
   explicit LogoutInst(int);
 
-  void Execute(Accounts &, Books &, Log &);
+  bool Execute(Accounts &, Books &, Log &);
   void CheckParameter(Accounts &, Books &, Log &);
   void CheckPrivilege(Accounts &);
-  instruction_t GetString() const;
+  std::string GetString() const;
 };
 class RegisterInst : public Instruction {
 public:
@@ -66,10 +66,10 @@ public:
 
   explicit RegisterInst(int, const user_id_t &, const password_t &, const username_t &);
 
-  void Execute(Accounts &, Books &, Log &);
+  bool Execute(Accounts &, Books &, Log &);
   void CheckParameter(Accounts &, Books &, Log &);
   void CheckPrivilege(Accounts &);
-  instruction_t GetString() const;
+  std::string GetString() const;
 
 private:
   user_id_t user_id_;
@@ -82,10 +82,10 @@ public:
 
   explicit PasswdInst(int, const user_id_t &, const password_t &, const password_t &);
 
-  void Execute(Accounts &, Books &, Log &);
+  bool Execute(Accounts &, Books &, Log &);
   void CheckParameter(Accounts &, Books &, Log &);
   void CheckPrivilege(Accounts &);
-  instruction_t GetString() const;
+  std::string GetString() const;
 
 private:
   user_id_t user_id_;
@@ -97,10 +97,10 @@ public:
 
   explicit UserAddInst(int, const user_id_t &, const password_t &, const privilege_t &, const username_t &);
 
-  void Execute(Accounts &, Books &, Log &);
+  bool Execute(Accounts &, Books &, Log &);
   void CheckParameter(Accounts &, Books &, Log &);
   void CheckPrivilege(Accounts &);
-  instruction_t GetString() const;
+  std::string GetString() const;
 
 private:
   user_id_t user_id_;
@@ -114,10 +114,10 @@ public:
 
   explicit DeleteInst(int, const user_id_t &);
 
-  void Execute(Accounts &, Books &, Log &);
+  bool Execute(Accounts &, Books &, Log &);
   void CheckParameter(Accounts &, Books &, Log &);
   void CheckPrivilege(Accounts &);
-  instruction_t GetString() const;
+  std::string GetString() const;
 
 private:
   user_id_t user_id_;
@@ -128,10 +128,10 @@ public:
 
   explicit ShowInst(int, const Books::Book &);
 
-  void Execute(Accounts &, Books &, Log &);
+  bool Execute(Accounts &, Books &, Log &);
   void CheckParameter(Accounts &, Books &, Log &);
   void CheckPrivilege(Accounts &);
-  instruction_t GetString() const;
+  std::string GetString() const;
 
 private:
   Books::Book search_index_;
@@ -142,10 +142,10 @@ public:
 
   explicit BuyInst(int, const ISBN_t &, const quantity_t &);
 
-  void Execute(Accounts &, Books &, Log &);
+  bool Execute(Accounts &, Books &, Log &);
   void CheckParameter(Accounts &, Books &, Log &);
   void CheckPrivilege(Accounts &);
-  instruction_t GetString() const;
+  std::string GetString() const;
 
 private:
   ISBN_t ISBN_;
@@ -157,10 +157,10 @@ public:
 
   explicit SelectInst(int, const ISBN_t &);
 
-  void Execute(Accounts &, Books &, Log &);
+  bool Execute(Accounts &, Books &, Log &);
   void CheckParameter(Accounts &, Books &, Log &);
   void CheckPrivilege(Accounts &);
-  instruction_t GetString() const;
+  std::string GetString() const;
 
 private:
   ISBN_t ISBN_;
@@ -171,10 +171,10 @@ public:
 
   explicit ModifyInst(int, const Books::Book &);
 
-  void Execute(Accounts &, Books &, Log &);
+  bool Execute(Accounts &, Books &, Log &);
   void CheckParameter(Accounts &, Books &, Log &);
   void CheckPrivilege(Accounts &);
-  instruction_t GetString() const;
+  std::string GetString() const;
 
 private:
   Books::Book modification_;
@@ -185,10 +185,10 @@ public:
 
   explicit ImportInst(int, const quantity_t &, const price_t &);
 
-  void Execute(Accounts &, Books &, Log &);
+  bool Execute(Accounts &, Books &, Log &);
   void CheckParameter(Accounts &, Books &, Log &);
   void CheckPrivilege(Accounts &);
-  instruction_t GetString() const;
+  std::string GetString() const;
 
 private:
   quantity_t quantity_;
@@ -200,10 +200,10 @@ public:
 
   explicit ShowFinanceInst(int, const count_t &);
 
-  void Execute(Accounts &, Books &, Log &);
+  bool Execute(Accounts &, Books &, Log &);
   void CheckParameter(Accounts &, Books &, Log &);
   void CheckPrivilege(Accounts &);
-  instruction_t GetString() const;
+  std::string GetString() const;
 
 private:
   count_t count_;
@@ -214,10 +214,10 @@ public:
 
   explicit ReportFinanceInst(int);
 
-  void Execute(Accounts &, Books &, Log &);
+  bool Execute(Accounts &, Books &, Log &);
   void CheckParameter(Accounts &, Books &, Log &);
   void CheckPrivilege(Accounts &);
-  instruction_t GetString() const;
+  std::string GetString() const;
 };
 class ReportEmployeeInst : public Instruction {
 public:
@@ -225,10 +225,10 @@ public:
 
   explicit ReportEmployeeInst(int);
 
-  void Execute(Accounts &, Books &, Log &);
+  bool Execute(Accounts &, Books &, Log &);
   void CheckParameter(Accounts &, Books &, Log &);
   void CheckPrivilege(Accounts &);
-  instruction_t GetString() const;
+  std::string GetString() const;
 };
 class LogInst : public Instruction {
 public:
@@ -236,10 +236,10 @@ public:
 
   explicit LogInst(int);
 
-  void Execute(Accounts &, Books &, Log &);
+  bool Execute(Accounts &, Books &, Log &);
   void CheckParameter(Accounts &, Books &, Log &);
   void CheckPrivilege(Accounts &);
-  instruction_t GetString() const;
+  std::string GetString() const;
 };
 
 #endif //BOOKSTORE_2023_INSTRUCTION_H

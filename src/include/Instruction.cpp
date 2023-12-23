@@ -2,15 +2,17 @@
 #include "Tools/error.h"
 
 Instruction::Instruction(int time) : time_(time) {}
-void Instruction::Execute(Accounts &accounts, Books &books, Log &log) {}
+bool Instruction::Execute(Accounts &accounts, Books &books, Log &log) {
+  return false;
+}
 void Instruction::CheckParameter(Accounts &accounts, Books &books, Log &log) {}
 void Instruction::CheckPrivilege(Accounts &accounts) {}
-instruction_t Instruction::GetString() const {
-  return { time_.GetString() + "null" };
+std::string Instruction::GetString() const {
+  return time_.GetString() + " null";
 }
 QuitInst::QuitInst(int time, const std::string &op) : Instruction(time), is_quit(op == "quit") {}
-void QuitInst::Execute(Accounts &accounts, Books &books, Log &log) {
-  exit(0);
+bool QuitInst::Execute(Accounts &accounts, Books &books, Log &log) {
+  return true;
 }
 void QuitInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {}
 void QuitInst::CheckPrivilege(Accounts &accounts) {
@@ -18,13 +20,14 @@ void QuitInst::CheckPrivilege(Accounts &accounts) {
     throw ErrorException("INSUFFICIENT PERMISSIONS");
   }
 }
-instruction_t QuitInst::GetString() const {
-  return { time_.GetString() + (is_quit ? "quit" : "exit") };
+std::string QuitInst::GetString() const {
+  return time_.GetString() + (is_quit ? "quit" : "exit");
 }
 SuInst::SuInst(int time, const std::string &user_id, const std::string &password)
     : Instruction(time), user_id_(user_id), password_(password) {}
-void SuInst::Execute(Accounts &accounts, Books &books, Log &log) {
+bool SuInst::Execute(Accounts &accounts, Books &books, Log &log) {
   accounts.LogOnUser(user_id_);
+  return false;
 }
 void SuInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {
   if (!accounts.HaveUser(user_id_)) {
@@ -43,12 +46,13 @@ void SuInst::CheckPrivilege(Accounts &accounts) {
     throw ErrorException("INSUFFICIENT PERMISSIONS");
   }
 }
-instruction_t SuInst::GetString() const {
-  return { time_.GetString() + "su " + user_id_.GetString() + " " + password_.GetString() };
+std::string SuInst::GetString() const {
+  return time_.GetString() + " su " + user_id_.GetString() + " " + password_.GetString();
 }
 LogoutInst::LogoutInst(int time) : Instruction(time) {}
-void LogoutInst::Execute(Accounts &accounts, Books &books, Log &log) {
+bool LogoutInst::Execute(Accounts &accounts, Books &books, Log &log) {
   accounts.LogOutUser();
+  return false;
 }
 void LogoutInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {
   if (accounts.IsUserEmpty()) {
@@ -60,13 +64,14 @@ void LogoutInst::CheckPrivilege(Accounts &accounts) {
     throw ErrorException("INSUFFICIENT PERMISSIONS");
   }
 }
-instruction_t LogoutInst::GetString() const {
-  return { time_.GetString() + "logout" };
+std::string LogoutInst::GetString() const {
+  return time_.GetString() + " logout";
 }
 RegisterInst::RegisterInst(int time, const user_id_t &user_id, const password_t &password, const username_t &username)
     : Instruction(time), user_id_(user_id), password_(password), username_(username) {}
-void RegisterInst::Execute(Accounts &accounts, Books &books, Log &log) {
+bool RegisterInst::Execute(Accounts &accounts, Books &books, Log &log) {
   accounts.AddUser(Accounts::User(user_id_, password_, username_, privilege_t("1")));
+  return false;
 }
 void RegisterInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {
   if (accounts.HaveUser(user_id_)) {
@@ -78,22 +83,23 @@ void RegisterInst::CheckPrivilege(Accounts &accounts) {
     throw ErrorException("INSUFFICIENT PERMISSIONS");
   }
 }
-instruction_t RegisterInst::GetString() const {
-  return { time_.GetString() + "register " + user_id_.GetString() + " " + password_.GetString() + " " +
-      username_.GetString()};
+std::string RegisterInst::GetString() const {
+  return time_.GetString() + " register " + user_id_.GetString() + " " + password_.GetString() + " " +
+      username_.GetString();
 }
 PasswdInst::PasswdInst(int time, const user_id_t &user_id, const password_t &current_password,
                        const password_t &new_password)
     : Instruction(time), user_id_(user_id), current_password_(current_password), new_password_(new_password) {}
-void PasswdInst::Execute(Accounts &accounts, Books &books, Log &log) {
+bool PasswdInst::Execute(Accounts &accounts, Books &books, Log &log) {
   accounts.ModifyPassword(user_id_, new_password_);
+  return false;
 }
 void PasswdInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {
   if (!accounts.HaveUser(user_id_)) {
     throw ErrorException("INVALID USERID");
   }
   Accounts::User user(accounts.GetUser(user_id_));
-  if (!current_password_.Empty() && current_password_ != user.id_) {
+  if (!current_password_.Empty() && current_password_ != user.password_) {
     throw ErrorException("WRONG PASSWORD");
   }
   if (current_password_.Empty() && accounts.GetNowUserPrivilege() != 7) {
@@ -105,15 +111,16 @@ void PasswdInst::CheckPrivilege(Accounts &accounts) {
     throw ErrorException("INSUFFICIENT PERMISSIONS");
   }
 }
-instruction_t PasswdInst::GetString() const {
-  return { time_.GetString() + "passwd " + user_id_.GetString() + " " +
-      (current_password_ == "" ? "" : current_password_.GetString() + " ") + new_password_.GetString() };
+std::string PasswdInst::GetString() const {
+  return time_.GetString() + " passwd " + user_id_.GetString() + " " +
+      (current_password_ == "" ? "" : current_password_.GetString() + " ") + new_password_.GetString();
 }
 UserAddInst::UserAddInst(int time, const user_id_t &user_id, const password_t &password, const privilege_t &privilege,
                          const username_t &username)
     : Instruction(time), user_id_(user_id), password_(password), privilege_(privilege), username_(username) {}
-void UserAddInst::Execute(Accounts &accounts, Books &books, Log &log) {
+bool UserAddInst::Execute(Accounts &accounts, Books &books, Log &log) {
   accounts.AddUser(Accounts::User(user_id_, password_, username_, privilege_));
+  return false;
 }
 void UserAddInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {
   int privilege = privilege_.ToInt();
@@ -132,13 +139,14 @@ void UserAddInst::CheckPrivilege(Accounts &accounts) {
     throw ErrorException("INSUFFICIENT PERMISSIONS");
   }
 }
-instruction_t UserAddInst::GetString() const {
-  return { time_.GetString() + "useradd " + user_id_.GetString() + " " + password_.GetString() + " " +
-      privilege_.GetString() + " " + username_.GetString() };
+std::string UserAddInst::GetString() const {
+  return time_.GetString() + " useradd " + user_id_.GetString() + " " + password_.GetString() + " " +
+      privilege_.GetString() + " " + username_.GetString();
 }
 DeleteInst::DeleteInst(int time, const user_id_t &user_id) : Instruction(time), user_id_(user_id) {}
-void DeleteInst::Execute(Accounts &accounts, Books &books, Log &log) {
+bool DeleteInst::Execute(Accounts &accounts, Books &books, Log &log) {
   accounts.DeleteUser(user_id_);
+  return false;
 }
 void DeleteInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {
   if (!accounts.HaveUser(user_id_)) {
@@ -153,30 +161,31 @@ void DeleteInst::CheckPrivilege(Accounts &accounts) {
     throw ErrorException("INSUFFICIENT PERMISSIONS");
   }
 }
-instruction_t DeleteInst::GetString() const {
-  return { time_.GetString() + "delete " + user_id_.GetString() };
+std::string DeleteInst::GetString() const {
+  return time_.GetString() + " delete " + user_id_.GetString();
 }
 ShowInst::ShowInst(int time, const Books::Book &show_index) : Instruction(time), search_index_(show_index) {}
-void ShowInst::Execute(Accounts &accounts, Books &books, Log &log) {
+bool ShowInst::Execute(Accounts &accounts, Books &books, Log &log) {
   std::vector<int> line_nums;
   if (search_index_.ISBN_.Empty() && search_index_.author_.Empty() && search_index_.book_name_.Empty() &&
   search_index_.keyword_.Empty()) {
     books.PrintBookFile(std::cout);
-    return;
+    return false;
   }
   if (!search_index_.ISBN_.Empty()) {
     line_nums = books.FindByISBN(search_index_.ISBN_);
   }
-  if (!search_index_.author_.Empty()) {
+  else if (!search_index_.author_.Empty()) {
     line_nums = books.FindByAuthor(search_index_.author_);
   }
-  if (!search_index_.book_name_.Empty()) {
+  else if (!search_index_.book_name_.Empty()) {
     line_nums = books.FindByBookName(search_index_.book_name_);
   }
-  if (!search_index_.keyword_.Empty()) {
+  else if (!search_index_.keyword_.Empty()) {
     line_nums = books.FindByKeyword(search_index_.keyword_);
   }
   books.PrintBooks(std::cout, line_nums);
+  return false;
 }
 void ShowInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {}
 void ShowInst::CheckPrivilege(Accounts &accounts) {
@@ -184,8 +193,8 @@ void ShowInst::CheckPrivilege(Accounts &accounts) {
     throw ErrorException("INSUFFICIENT PERMISSIONS");
   }
 }
-instruction_t ShowInst::GetString() const {
-  std::string result = time_.GetString() + "show ";
+std::string ShowInst::GetString() const {
+  std::string result = time_.GetString() + " show ";
   if (!search_index_.ISBN_.Empty()) {
     result += "-ISBN=" + search_index_.ISBN_.GetString();
   }
@@ -198,11 +207,11 @@ instruction_t ShowInst::GetString() const {
   if (!search_index_.keyword_.Empty()) {
     result += "-keyword=" + search_index_.keyword_.GetString();
   }
-  return { result };
+  return result;
 }
 BuyInst::BuyInst(int time, const ISBN_t &ISBN, const quantity_t &quantity)
     : Instruction(time), ISBN_(ISBN), quantity_(quantity) {}
-void BuyInst::Execute(Accounts &accounts, Books &books, Log &log) {
+bool BuyInst::Execute(Accounts &accounts, Books &books, Log &log) {
   Books::Book book(books.GetBook(ISBN_));
   long double income = book.price_.ToDouble(2) * quantity_.ToLongLong();
   book.quantity_ = quantity_t(book.quantity_.ToLongLong() - quantity_.ToLongLong());
@@ -212,6 +221,7 @@ void BuyInst::Execute(Accounts &accounts, Books &books, Log &log) {
   finance_info.time_ = time_.ToInt();
   finance_info.income_ += income;
   log.AddFinanceInfo(finance_info);
+  return false;
 }
 void BuyInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {
   if (!books.HaveISBN(ISBN_)) {
@@ -227,17 +237,18 @@ void BuyInst::CheckPrivilege(Accounts &accounts) {
     throw ErrorException("INSUFFICIENT PERMISSIONS");
   }
 }
-instruction_t BuyInst::GetString() const {
-  return { time_.GetString() + "buy " + ISBN_.GetString() + " " + quantity_.GetString() };
+std::string BuyInst::GetString() const {
+  return time_.GetString() + " buy " + ISBN_.GetString() + " " + quantity_.GetString();
 }
 SelectInst::SelectInst(int time, const ISBN_t &ISBN) : Instruction(time), ISBN_(ISBN) {}
-void SelectInst::Execute(Accounts &accounts, Books &books, Log &log) {
+bool SelectInst::Execute(Accounts &accounts, Books &books, Log &log) {
   if (books.HaveISBN(ISBN_)) {
     accounts.Select(books.FindByISBN(ISBN_).front());
-    return;
+    return false;
   }
   Books::Book book(ISBN_.ToString());
   accounts.Select(books.AddBook(book));
+  return false;
 }
 void SelectInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {}
 void SelectInst::CheckPrivilege(Accounts &accounts) {
@@ -245,18 +256,20 @@ void SelectInst::CheckPrivilege(Accounts &accounts) {
     throw ErrorException("INSUFFICIENT PERMISSIONS");
   }
 }
-instruction_t SelectInst::GetString() const {
-  return { time_.GetString() + "select " + ISBN_.GetString() };
+std::string SelectInst::GetString() const {
+  return time_.GetString() + " select " + ISBN_.GetString();
 }
 ModifyInst::ModifyInst(int time, const Books::Book &modification) : Instruction(time), modification_(modification) {}
-void ModifyInst::Execute(Accounts &accounts, Books &books, Log &log) {
+bool ModifyInst::Execute(Accounts &accounts, Books &books, Log &log) {
   books.Modify(modification_, accounts.GetSelect());
+  accounts.ClearPreviousUsersSelect();
+  return false;
 }
 void ModifyInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {
   if (accounts.GetSelect() == -1) {
     throw ErrorException("NO BOOK SELECTED");
   }
-  if (modification_.ISBN_ == books.GetBook(accounts.GetSelect()).ISBN_) {
+  if (books.HaveISBN(modification_.ISBN_)) {
     throw ErrorException("NEW ISBN IS SAME AS PREVIOUS ISBN");
   }
 }
@@ -265,8 +278,8 @@ void ModifyInst::CheckPrivilege(Accounts &accounts) {
     throw ErrorException("INSUFFICIENT PERMISSIONS");
   }
 }
-instruction_t ModifyInst::GetString() const {
-  std::string result = time_.GetString() + "modify";
+std::string ModifyInst::GetString() const {
+  std::string result = time_.GetString() + " modify";
   if (!modification_.ISBN_.Empty()) {
     result += " -ISBN=" + modification_.ISBN_.GetString();
   }
@@ -279,11 +292,11 @@ instruction_t ModifyInst::GetString() const {
   if (!modification_.keyword_.Empty()) {
     result += " -keyword=" + modification_.keyword_.GetString();
   }
-  return { result };
+  return result;
 }
 ImportInst::ImportInst(int time, const quantity_t &quantity, const price_t &cost)
     : Instruction(time), quantity_(quantity), cost_(cost) {}
-void ImportInst::Execute(Accounts &accounts, Books &books, Log &log) {
+bool ImportInst::Execute(Accounts &accounts, Books &books, Log &log) {
   Books::Book book(books.GetBook(accounts.GetSelect()));
   book.quantity_ = quantity_t(book.quantity_.ToLongLong() + quantity_.ToLongLong());
   books.Modify(book, books.FindByISBN(book.ISBN_).front());
@@ -291,6 +304,7 @@ void ImportInst::Execute(Accounts &accounts, Books &books, Log &log) {
   finance_info.time_ = time_.ToInt();
   finance_info.outcome_ += cost_.ToDouble(2);
   log.AddFinanceInfo(finance_info);
+  return false;
 }
 void ImportInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {
   if (accounts.GetSelect() == -1) {
@@ -308,12 +322,13 @@ void ImportInst::CheckPrivilege(Accounts &accounts) {
     throw ErrorException("INSUFFICIENT PERMISSIONS");
   }
 }
-instruction_t ImportInst::GetString() const {
-  return { time_.GetString() + "import " + quantity_.GetString() + " " + cost_.GetString(2) };
+std::string ImportInst::GetString() const {
+  return time_.GetString() + " import " + quantity_.GetString() + " " + cost_.GetString(2);
 }
 ShowFinanceInst::ShowFinanceInst(int time, const count_t &count) : Instruction(time), count_(count) {}
-void ShowFinanceInst::Execute(Accounts &accounts, Books &books, Log &log) {
+bool ShowFinanceInst::Execute(Accounts &accounts, Books &books, Log &log) {
   log.PrintFinanceInfo(std::cout, (count_.Empty() ? -1 : count_.ToInt()));
+  return false;
 }
 void ShowFinanceInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {
   if (count_.ToLongLong() > 2147483647ll || count_.ToInt() > log.GetFinanceFileLength()) {
@@ -325,12 +340,13 @@ void ShowFinanceInst::CheckPrivilege(Accounts &accounts) {
     throw ErrorException("INSUFFICIENT PERMISSIONS");
   }
 }
-instruction_t ShowFinanceInst::GetString() const {
-  return { time_.GetString() + "show finance" + (count_.Empty() ? "" : " " + count_.GetString()) };
+std::string ShowFinanceInst::GetString() const {
+  return time_.GetString() + "show finance" + (count_.Empty() ? "" : " " + count_.GetString());
 }
 ReportFinanceInst::ReportFinanceInst(int time) : Instruction(time) {}
-void ReportFinanceInst::Execute(Accounts &accounts, Books &books, Log &log) {
+bool ReportFinanceInst::Execute(Accounts &accounts, Books &books, Log &log) {
   log.PrintFinance(std::cout);
+  return false;
 }
 void ReportFinanceInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {}
 void ReportFinanceInst::CheckPrivilege(Accounts &accounts) {
@@ -338,12 +354,13 @@ void ReportFinanceInst::CheckPrivilege(Accounts &accounts) {
     throw ErrorException("INSUFFICIENT PERMISSIONS");
   }
 }
-instruction_t ReportFinanceInst::GetString() const {
-  return { time_.GetString() + "report finance" };
+std::string ReportFinanceInst::GetString() const {
+  return time_.GetString() + " report finance";
 }
 ReportEmployeeInst::ReportEmployeeInst(int time) : Instruction(time) {}
-void ReportEmployeeInst::Execute(Accounts &accounts, Books &books, Log &log) {
+bool ReportEmployeeInst::Execute(Accounts &accounts, Books &books, Log &log) {
   log.PrintEmployee(std::cout);
+  return false;
 }
 void ReportEmployeeInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {}
 void ReportEmployeeInst::CheckPrivilege(Accounts &accounts) {
@@ -351,12 +368,13 @@ void ReportEmployeeInst::CheckPrivilege(Accounts &accounts) {
     throw ErrorException("INSUFFICIENT PERMISSIONS");
   }
 }
-instruction_t ReportEmployeeInst::GetString() const {
-  return { time_.GetString() + "report employee" };
+std::string ReportEmployeeInst::GetString() const {
+  return time_.GetString() + " report employee";
 }
 LogInst::LogInst(int time) : Instruction(time) {}
-void LogInst::Execute(Accounts &accounts, Books &books, Log &log) {
+bool LogInst::Execute(Accounts &accounts, Books &books, Log &log) {
   log.PrintLogFile(std::cout);
+  return false;
 }
 void LogInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {}
 void LogInst::CheckPrivilege(Accounts &accounts) {
@@ -364,6 +382,6 @@ void LogInst::CheckPrivilege(Accounts &accounts) {
     throw ErrorException("INSUFFICIENT PERMISSIONS");
   }
 }
-instruction_t LogInst::GetString() const {
-  return { time_.GetString() + "log" };
+std::string LogInst::GetString() const {
+  return time_.GetString() + " log";
 }

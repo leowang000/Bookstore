@@ -33,8 +33,8 @@ public:
   friend std::istream &operator>><len>(std::istream &, String<len> &);
   int ToInt() const;
   long long ToLongLong() const;
-  double ToDouble(int) const;
-  std::string GetString(int precision = -1) const;
+  long double ToDouble(int) const;
+  std::string GetString(int precision = -1, bool fill = true) const;
   std::string ToString() const;
   bool Empty() const;
 
@@ -153,7 +153,7 @@ long long String<len>::ToLongLong() const {
   return result;
 }
 template<int len>
-double String<len>::ToDouble(int precision) const {
+long double String<len>::ToDouble(int precision) const {
   int i, j;
   double result = 0, base = 1;
   for (i = 0; str_[i] != '.' && i < strlen(str_); i++) {
@@ -169,11 +169,13 @@ double String<len>::ToDouble(int precision) const {
   return result;
 }
 template<int len>
-std::string String<len>::GetString(int precision) const {
+std::string String<len>::GetString(int precision, bool fill) const {
   if (precision == -1) {
     std::string result(str_);
-    while (result.length() < len) {
-      result.push_back(' ');
+    if (fill) {
+      while (result.length() < len) {
+        result.push_back(' ');
+      }
     }
     return result;
   }

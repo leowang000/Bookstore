@@ -4,7 +4,7 @@ Accounts::User::User() : id_(), password_(), username_(), privilege_("0") {}
 Accounts::User::User(const user_id_t &id, const password_t &password, const username_t &username,
                      const privilege_t &privilege)
     : id_(id), password_(password), username_(username), privilege_(privilege) {}
-user_t Accounts::User::GetString() const {
+std::string Accounts::User::GetString() const {
   return id_.GetString() + " {" + privilege_.GetString() + "} " + username_.GetString();
 }
 bool Accounts::User::operator<(const User &rhs) const {
@@ -26,9 +26,10 @@ bool Accounts::User::operator!=(const User &rhs) const {
 }
 
 Accounts::Accounts(char *account_data_file_name, char *account_node_file_name)
-    : accounts_map_(account_data_file_name, account_node_file_name), users_() {
+    : accounts_map_(account_data_file_name, account_node_file_name), users_() {}
+void Accounts::Init() {
   if (accounts_map_.Empty()) {
-    User root_user("root", "sjtu", "", "7");
+    User root_user("root", "sjtu", "bubble", "7");
     accounts_map_.Insert("root", root_user);
   }
 }
@@ -64,11 +65,11 @@ void Accounts::ModifyPassword(const user_id_t &user_id, const password_t &new_pa
 int Accounts::GetNowUserPrivilege() const {
   return users_.empty() ? 0 : users_.back().first.privilege_.ToInt();
 }
-user_t Accounts::GetNowUserString() const {
+std::string Accounts::GetNowUserString() const {
   if (!users_.empty()) {
     return users_.back().first.GetString();
   }
-  return user_id_t().GetString() + " {0} " + username_t().GetString();
+  return  user_id_t().GetString() + " {0} " + username_t().GetString();
 }
 bool Accounts::IsInstructionPrivilegeValid(int privilege) const {
   return GetNowUserPrivilege() >= privilege;
@@ -89,4 +90,15 @@ bool Accounts::IsUserLoggedOn(const user_id_t &user_id) const {
     }
   }
   return false;
+}
+void Accounts::ClearPreviousUsersSelect() {
+  if (users_.empty()) {
+    return;
+  }
+  int i, line_num = users_.back().second;
+  for (i = 0; i < users_.size() - 1; i++) {
+    if (users_[i].second == line_num) {
+      users_[i].second = -1;
+    }
+  }
 }

@@ -10,6 +10,7 @@ bool IsTokenEnd(std::istream &is){
     is.unget();
     return true;
   }
+  is.unget();
   return false;
 }
 void SkipSpaces(std::istream &is) {
@@ -64,6 +65,9 @@ void ReadFormat(std::istream &is, const std::string &format) {
 std::string ReadString(std::istream &is, bool number, bool letter, bool underline, bool quotes, bool other_print,
                        bool is_end_of_line, bool have_quotes, bool end, bool could_be_empty) {
   if (!is.good()) {
+    if (could_be_empty) {
+      return "";
+    }
     throw ErrorException("INVALID INPUT FORMAT");
   }
   std::string result;
@@ -134,7 +138,8 @@ std::string ReadDouble(std::istream &is, bool is_end_of_line) {
   if (IsTokenEnd(is)) {
     return result;
   }
-  if (is.get() != '.') {
+  char c = is.get();
+  if (c != '.') {
     is.unget();
     throw ErrorException("INVALID INPUT FORMAT");
   }

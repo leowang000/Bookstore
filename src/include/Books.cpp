@@ -3,11 +3,10 @@
 
 Books::Book::Book(const std::string &ISBN, const std::string &book_name, const std::string &author,
                   const std::string &keyword, const std::string &quantity, const std::string &price)
-    : ISBN_(ISBN), book_name_(book_name), author_(author), keyword_(keyword), quantity_(quantity), price_(price),
-    keywords_(ParseKeywords(keyword)) {}
+    : ISBN_(ISBN), book_name_(book_name), author_(author), keyword_(keyword), quantity_(quantity), price_(price) {}
 std::string Books::Book::GetString() {
-  return ISBN_.GetString() + "\t" + book_name_.GetString() + "\t" + author_.GetString() + "\t" + keyword_.GetString() +
-  "\t" +  price_.GetString(2) + "\t" + quantity_.GetString();
+  return ISBN_.ToString() + "\t" + book_name_.ToString() + "\t" + author_.ToString() + "\t" + keyword_.ToString() +
+  "\t" +  price_.GetString(2, false) + "\t" + quantity_.ToString();
 }
 Books::Books(char *book_file_name, char *ISBN_data_file_name, char *ISBN_node_file_name,
              char *book_name_data_file_name, char *book_name_node_file_name, char *author_data_file_name,
@@ -31,42 +30,53 @@ std::vector<int> Books::FindByKeyword(const keyword_t &keyword) {
 bool Books::HaveISBN(const ISBN_t &ISBN) {
   return ISBN_map_.Have(ISBN);
 }
-bool Books::HaveBookName(const book_name_t &book_name) {
-  return book_name_map_.Have(book_name);
-}
-bool Books::HaveAuthor(const author_t &author) {
-  return author_map_.Have(author);
-}
-bool Books::HaveKeyword(const keyword_t &keyword) {
-  return keyword_map_.Have(keyword);
-}
-void Books::Modify(Books::Book &new_book, int line_num) {
+void Books::Modify(Books::Book &modification, int line_num) {
   Book old_book;
   ReadBook(old_book, line_num);
-  if (new_book.ISBN_ != old_book.ISBN_) {
+  if (!modification.ISBN_.Empty()) {
     ISBN_map_.Delete(old_book.ISBN_, line_num);
-    ISBN_map_.Insert(new_book.ISBN_, line_num);
+    ISBN_map_.Insert(modification.ISBN_, line_num);
+    old_book.ISBN_ = modification.ISBN_;
   }
-  if (new_book.book_name_ != old_book.book_name_) {
+  if (!modification.book_name_.Empty()) {
     book_name_map_.Delete(old_book.book_name_, line_num);
-    book_name_map_.Insert(new_book.book_name_, line_num);
+    book_name_map_.Insert(modification.book_name_, line_num);
+    old_book.book_name_ = modification.book_name_;
   }
-  if (new_book.author_ != old_book.author_) {
+  if (!modification.author_.Empty()) {
     author_map_.Delete(old_book.author_, line_num);
-    author_map_.Insert(new_book.author_, line_num);
+    author_map_.Insert(modification.author_, line_num);
+    old_book.author_ = modification.author_;
   }
-  if (new_book.keyword_ != old_book.keyword_) {
-    for (const auto &word : old_book.keywords_) {
+  if (!modification.keyword_.Empty()) {
+    std::vector<std::string> old_keywords(ParseKeywords(old_book.keyword_.ToString()));
+    std::vector<std::string> new_keywords(ParseKeywords(modification.keyword_.ToString()));
+    for (const auto &word : old_keywords) {
       keyword_map_.Delete(word, line_num);
     }
-    for (const auto &word : new_book.keywords_) {
+    for (const auto &word : new_keywords) {
       keyword_map_.Insert(word, line_num);
     }
+    old_book.keyword_ = modification.keyword_;
   }
-  WriteBook(new_book, line_num);
+  if (!modification.price_.Empty()) {
+    old_book.price_ = modification.price_;
+  }
+  if (!modification.quantity_.Empty()) {
+    old_book.quantity_ = modification.quantity_;
+  }
+  WriteBook(old_book, line_num);
 }
 int Books::AddBook(Books::Book &book) {
-  return WriteBook(book);
+  int line_num = WriteBook(book);
+  ISBN_map_.Insert(book.ISBN_, line_num);
+  book_name_map_.Insert(book.book_name_, line_num);
+  author_map_.Insert(book.author_, line_num);
+  std::vector<std::string> keywords = ParseKeywords(book.keyword_.ToString());
+  for (auto &word : keywords) {
+    keyword_map_.Insert(word, line_num);
+  }
+  return line_num;
 }
 void Books::PrintBookFile(std::ostream &os) {
   std::vector<UnrolledLinkedList<ISBN_t, int>::pair_t> line_nums(ISBN_map_.GetAll());

@@ -20,7 +20,7 @@ public:
     User();
     explicit User(const user_id_t &, const password_t &, const username_t &, const privilege_t &);
 
-    user_t GetString() const;
+    std::string GetString() const;
     bool operator<(const User &) const;
     bool operator==(const User &) const;
     bool operator>(const User &) const;
@@ -31,6 +31,7 @@ public:
 
   explicit Accounts(char *, char *);
 
+  void Init();
   bool HaveUser(const user_id_t &);
   bool IsUserEmpty() const;
   void LogOnUser(const user_id_t &);
@@ -39,12 +40,13 @@ public:
   void DeleteUser(const user_id_t &);
   void ModifyPassword(const user_id_t &, const password_t &);
   int GetNowUserPrivilege() const;
-  user_t GetNowUserString() const;
+  std::string GetNowUserString() const;
   bool IsInstructionPrivilegeValid(int) const;
   User GetUser(const user_id_t &);
   void Select(int);
   int GetSelect() const;
   bool IsUserLoggedOn(const user_id_t &) const;
+  void ClearPreviousUsersSelect();
 
 private:
   UnrolledLinkedList<user_id_t, User> accounts_map_;

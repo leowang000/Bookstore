@@ -1,8 +1,0 @@
-su root sjtu
-su root sjtu
-logout
-register userid password username
-su userid password
-logout
-logout
-logout

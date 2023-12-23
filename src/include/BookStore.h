@@ -13,9 +13,11 @@ public:
   explicit BookStore(char *, char *, char *, char *, char *, char *, char *, char *, char *, char *, char *, char *, char *,
             char *, char *);
 
+  void Init();
   void GetInstruction(const std::string &);
   void CheckInstruction();
-  void ExecuteInstruction();
+  bool ExecuteInstruction();
+  void AddLog(bool valid = true);
 
   int time_;
   Accounts accounts_;

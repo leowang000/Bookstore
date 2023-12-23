@@ -21,7 +21,6 @@ public:
     keyword_t keyword_;
     quantity_t quantity_;
     price_t price_;
-    std::vector<std::string> keywords_;
 
     std::string GetString();
   };
@@ -33,9 +32,6 @@ public:
   std::vector<int> FindByAuthor(const author_t &);
   std::vector<int> FindByKeyword(const keyword_t &);
   bool HaveISBN(const ISBN_t &);
-  bool HaveBookName(const book_name_t &);
-  bool HaveAuthor(const author_t &);
-  bool HaveKeyword(const keyword_t &);
   void Modify(Book &, int);
   int AddBook(Book &);
   void PrintBookFile(std::ostream &);

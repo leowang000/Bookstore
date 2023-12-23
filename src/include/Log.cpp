@@ -28,10 +28,10 @@ void Log::PrintLogFile(std::ostream &os) {
   }
   log_file_.close();
   os << "----------LOG END----------\n";
-}//+ [收入] - [支出]\n
+}
 void Log::PrintFinanceInfo(std::ostream &os, int count) {
   FinanceInfo end, beg;
-  if (count == -1) {
+  if (count == -1 || count == finance_file_length_) {
     if (finance_file_length_ == 0) {
       os << "+ 0.00 - 0.00\n";
       return;
@@ -44,7 +44,7 @@ void Log::PrintFinanceInfo(std::ostream &os, int count) {
     os << "\n";
     return;
   }
-  finance_file_.Read(beg, finance_file_length_ - count);
+  finance_file_.Read(beg, finance_file_length_ - count - 1);
   finance_file_.Read(end, finance_file_length_ - 1);
   os << std::fixed << std::setprecision(2) << "+ " << end.income_ - beg.income_ << " - " <<
       end.outcome_ - beg.outcome_ << "\n";
