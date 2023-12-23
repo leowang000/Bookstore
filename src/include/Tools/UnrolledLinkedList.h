@@ -21,13 +21,14 @@ public:
     pair_t();
     explicit pair_t(key_t, val_t);
     pair_t(const pair_t &) = default;
+    pair_t &operator=(const pair_t &);
+
     bool operator<(const pair_t &) const;
     bool operator>(const pair_t &) const;
     bool operator>=(const pair_t &) const;
     bool operator==(const pair_t &) const;
     bool operator<=(const pair_t &) const;
     bool operator!=(const pair_t &) const;
-    pair_t &operator=(const pair_t &);
   };
 
   explicit UnrolledLinkedList(char *, char *);
@@ -80,6 +81,16 @@ UnrolledLinkedList<key_t, val_t>::pair_t::pair_t() : key_(), val_() {}
 template<class key_t, class val_t>
 UnrolledLinkedList<key_t, val_t>::pair_t::pair_t(key_t key, val_t val) : key_(key), val_(val) {}
 template<class key_t, class val_t>
+typename UnrolledLinkedList<key_t, val_t>::pair_t &UnrolledLinkedList<key_t, val_t>::pair_t::operator=(
+    const UnrolledLinkedList<key_t, val_t>::pair_t &rhs) {
+  if (this == &rhs) {
+    return *this;
+  }
+  key_ = rhs.key_;
+  val_ = rhs.val_;
+  return *this;
+}
+template<class key_t, class val_t>
 bool UnrolledLinkedList<key_t, val_t>::pair_t::operator<(const UnrolledLinkedList<key_t, val_t>::pair_t &rhs) const {
   if (key_ != rhs.key_) {
     return key_ < rhs.key_;
@@ -108,16 +119,6 @@ bool UnrolledLinkedList<key_t, val_t>::pair_t::operator<=(const UnrolledLinkedLi
 template<class key_t, class val_t>
 bool UnrolledLinkedList<key_t, val_t>::pair_t::operator!=(const UnrolledLinkedList<key_t, val_t>::pair_t &rhs) const {
   return key_ != rhs.key_ || val_ != rhs.val_;
-}
-template<class key_t, class val_t>
-typename UnrolledLinkedList<key_t, val_t>::pair_t &UnrolledLinkedList<key_t, val_t>::pair_t::operator=(
-    const UnrolledLinkedList<key_t, val_t>::pair_t &rhs) {
-  if (this == &rhs) {
-    return *this;
-  }
-  key_ = rhs.key_;
-  val_ = rhs.val_;
-  return *this;
 }
 template<class key_t, class val_t>
 UnrolledLinkedList<key_t, val_t>::Node::Node() : min_pair_(), size_(), block_index_() {}

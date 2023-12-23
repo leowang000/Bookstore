@@ -9,20 +9,6 @@
 #include "Tools/File.h"
 #include "type_definition.h"
 
-struct Line {
-  int line_num_;
-  ISBN_t ISBN_;
-
-  Line();
-  Line(int, const ISBN_t &);
-
-  bool operator<(const Line &) const;
-  bool operator==(const Line &) const;
-  bool operator>(const Line &) const;
-  bool operator<=(const Line &) const;
-  bool operator>=(const Line &) const;
-  bool operator!=(const Line &) const;
-};
 class Books {
 public:
   struct Book {
@@ -54,6 +40,21 @@ public:
   Book GetBook(int);
 
 private:
+  struct Line {
+    int line_num_;
+    ISBN_t ISBN_;
+
+    Line();
+    Line(int, const ISBN_t &);
+
+    bool operator<(const Line &) const;
+    bool operator==(const Line &) const;
+    bool operator>(const Line &) const;
+    bool operator<=(const Line &) const;
+    bool operator>=(const Line &) const;
+    bool operator!=(const Line &) const;
+  };
+
   void ReadBook(Book &, int);
   int WriteBook(Book &, int line_num = -1);
 

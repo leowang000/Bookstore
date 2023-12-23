@@ -1,26 +1,6 @@
 #include "Books.h"
 #include "Tools/read_string.h"
 
-Line::Line() : line_num_(), ISBN_() {}
-Line::Line(int line_num, const ISBN_t &ISBN) : line_num_(line_num), ISBN_(ISBN) {}
-bool Line::operator<(const Line &rhs) const {
-  return ISBN_ < rhs.ISBN_;
-}
-bool Line::operator==(const Line &rhs) const {
-  return ISBN_ == rhs.ISBN_;
-}
-bool Line::operator>(const Line &rhs) const {
-  return ISBN_ > rhs.ISBN_;
-}
-bool Line::operator<=(const Line &rhs) const {
-  return ISBN_ <= rhs.ISBN_;
-}
-bool Line::operator>=(const Line &rhs) const {
-  return ISBN_ >= rhs.ISBN_;
-}
-bool Line::operator!=(const Line &rhs) const {
-  return ISBN_ != rhs.ISBN_;
-}
 Books::Book::Book(const std::string &ISBN, const std::string &book_name, const std::string &author,
                   const std::string &keyword, const std::string &quantity, const std::string &price)
     : ISBN_(ISBN), book_name_(book_name), author_(author), keyword_(keyword), quantity_(quantity), price_(price) {}
@@ -146,6 +126,26 @@ Books::Book Books::GetBook(int line_num) {
   Book book;
   ReadBook(book, line_num);
   return book;
+}
+Books::Line::Line() : line_num_(), ISBN_() {}
+Books::Line::Line(int line_num, const ISBN_t &ISBN) : line_num_(line_num), ISBN_(ISBN) {}
+bool Books::Line::operator<(const Books::Line &rhs) const {
+  return ISBN_ < rhs.ISBN_;
+}
+bool Books::Line::operator==(const Books::Line &rhs) const {
+  return ISBN_ == rhs.ISBN_;
+}
+bool Books::Line::operator>(const Books::Line &rhs) const {
+  return ISBN_ > rhs.ISBN_;
+}
+bool Books::Line::operator<=(const Books::Line &rhs) const {
+  return ISBN_ <= rhs.ISBN_;
+}
+bool Books::Line::operator>=(const Books::Line &rhs) const {
+  return ISBN_ >= rhs.ISBN_;
+}
+bool Books::Line::operator!=(const Books::Line &rhs) const {
+  return ISBN_ != rhs.ISBN_;
 }
 void Books::ReadBook(Book &dst, int line_num) {
   book_file_.Read(dst, line_num);
