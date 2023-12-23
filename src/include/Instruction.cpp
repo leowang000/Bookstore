@@ -262,7 +262,6 @@ std::string SelectInst::GetString() const {
 ModifyInst::ModifyInst(int time, const Books::Book &modification) : Instruction(time), modification_(modification) {}
 bool ModifyInst::Execute(Accounts &accounts, Books &books, Log &log) {
   books.Modify(modification_, accounts.GetSelect());
-  accounts.ClearPreviousUsersSelect();
   return false;
 }
 void ModifyInst::CheckParameter(Accounts &accounts, Books &books, Log &log) {

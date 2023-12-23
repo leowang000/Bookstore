@@ -46,7 +46,6 @@ public:
   void Select(int);
   int GetSelect() const;
   bool IsUserLoggedOn(const user_id_t &) const;
-  void ClearPreviousUsersSelect();
 
 private:
   UnrolledLinkedList<user_id_t, User> accounts_map_;

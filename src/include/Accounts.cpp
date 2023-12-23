@@ -91,14 +91,3 @@ bool Accounts::IsUserLoggedOn(const user_id_t &user_id) const {
   }
   return false;
 }
-void Accounts::ClearPreviousUsersSelect() {
-  if (users_.empty()) {
-    return;
-  }
-  int i, line_num = users_.back().second;
-  for (i = 0; i < users_.size() - 1; i++) {
-    if (users_[i].second == line_num) {
-      users_[i].second = -1;
-    }
-  }
-}
