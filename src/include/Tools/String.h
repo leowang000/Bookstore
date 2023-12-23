@@ -35,7 +35,6 @@ public:
   long long ToLongLong() const;
   long double ToDouble(int) const;
   std::string GetString(int precision = -1, bool fill = true) const;
-  std::string ToString() const;
   bool Empty() const;
 
 private:
@@ -205,10 +204,6 @@ std::string String<len>::GetString(int precision, bool fill) const {
     res << std::fixed << std::setprecision(precision) << ToDouble(precision);
   }
   return res.str();
-}
-template<int len>
-std::string String<len>::ToString() const {
-  return std::string(str_);
 }
 template<int len>
 bool String<len>::Empty() const {

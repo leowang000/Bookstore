@@ -25,8 +25,8 @@ Books::Book::Book(const std::string &ISBN, const std::string &book_name, const s
                   const std::string &keyword, const std::string &quantity, const std::string &price)
     : ISBN_(ISBN), book_name_(book_name), author_(author), keyword_(keyword), quantity_(quantity), price_(price) {}
 std::string Books::Book::GetString() {
-  return ISBN_.ToString() + "\t" + book_name_.ToString() + "\t" + author_.ToString() + "\t" + keyword_.ToString() +
-  "\t" +  price_.GetString(2, false) + "\t" + quantity_.ToString();
+  return ISBN_.GetString(-1, false) + "\t" + book_name_.GetString(-1, false) + "\t" + author_.GetString(-1, false) +
+  "\t" + keyword_.GetString(-1, false) + "\t" +  price_.GetString(2, false) + "\t" + quantity_.GetString(-1, false);
 }
 Books::Books(char *book_file_name, char *ISBN_data_file_name, char *ISBN_node_file_name,
              char *book_name_data_file_name, char *book_name_node_file_name, char *author_data_file_name,
@@ -88,8 +88,8 @@ void Books::Modify(Books::Book &modification, int line_num) {
     old_book.author_ = modification.author_;
   }
   if (!modification.keyword_.Empty()) {
-    std::vector<std::string> old_keywords(ParseKeywords(old_book.keyword_.ToString()));
-    std::vector<std::string> new_keywords(ParseKeywords(modification.keyword_.ToString()));
+    std::vector<std::string> old_keywords(ParseKeywords(old_book.keyword_.GetString(-1, false)));
+    std::vector<std::string> new_keywords(ParseKeywords(modification.keyword_.GetString(-1, false)));
     for (const auto &word : old_keywords) {
       keyword_map_.Delete(word, old_line);
     }
@@ -112,7 +112,7 @@ int Books::AddBook(Books::Book &book) {
   ISBN_map_.Insert(book.ISBN_, line_num);
   book_name_map_.Insert(book.book_name_, line);
   author_map_.Insert(book.author_, line);
-  std::vector<std::string> keywords = ParseKeywords(book.keyword_.ToString());
+  std::vector<std::string> keywords = ParseKeywords(book.keyword_.GetString(-1, false));
   for (auto &word : keywords) {
     keyword_map_.Insert(word, line);
   }

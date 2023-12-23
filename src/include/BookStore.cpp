@@ -17,7 +17,7 @@ BookStore::BookStore(char *account_data_file_name, char *account_node_file_name,
     log_file.seekg(-sizeof(log_info_t), std::ios::end);
     log_info_t last_log_info;
     log_file.read(reinterpret_cast<char *>(&last_log_info), sizeof(log_info_t));
-    std::string time_string = last_log_info.ToString().substr(67, 6);
+    std::string time_string = last_log_info.GetString(-1, false).substr(67, 6);
     time_ = 0;
     while (time_string[i] == ' ') {
       i++;

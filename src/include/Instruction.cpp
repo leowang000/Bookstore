@@ -246,7 +246,7 @@ bool SelectInst::Execute(Accounts &accounts, Books &books, Log &log) {
     accounts.Select(books.FindByISBN(ISBN_).front());
     return false;
   }
-  Books::Book book(ISBN_.ToString());
+  Books::Book book(ISBN_.GetString(-1, false));
   accounts.Select(books.AddBook(book));
   return false;
 }
