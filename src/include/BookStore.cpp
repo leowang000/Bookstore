@@ -13,16 +13,16 @@ BookStore::BookStore(char *account_data_file_name, char *account_node_file_name,
   log_file.Open();
   log_file.seekg(0, std::ios::end);
   if (log_file.tellg() != 0) {
-    int i;
+    int i = 0;
     log_file.seekg(-sizeof(log_info_t), std::ios::end);
     log_info_t last_log_info;
     log_file.read(reinterpret_cast<char *>(&last_log_info), sizeof(log_info_t));
     std::string time_string = last_log_info.ToString().substr(67, 6);
     time_ = 0;
-    for (i = 0; i < 6; i++) {
-      if (!isdigit(time_string[i])) {
-        break;
-      }
+    while (time_string[i] == ' ') {
+      i++;
+    }
+    for (; i < 6; i++) {
       time_ = 10 * time_ + time_string[i] - '0';
     }
     time_++;
@@ -256,7 +256,7 @@ void BookStore::AddLog(bool valid) {
     time_++;
     return;
   }
-  instruction_t instruction_str(system_time_t(time_).GetString() + " INVALID");
+  instruction_t instruction_str(system_time_t(time_, false).GetString() + " INVALID");
   log_info_t log_info(now_user_str.GetString() + ": " + instruction_str.GetString());
   log_.AddLogInfo(log_info);
   time_++;

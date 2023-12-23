@@ -18,7 +18,7 @@ public:
   String(const String<len> &);
   String(const char *);
   String(const std::string &);
-  explicit String(long long);
+  explicit String(long long, bool left = true);
   explicit String(const long double &, int);
   String &operator=(const String<len> &);
 
@@ -31,7 +31,7 @@ public:
   bool operator!=(const String<len> &) const;
   friend std::ostream &operator<<<len>(std::ostream &, const String<len> &);
   friend std::istream &operator>><len>(std::istream &, String<len> &);
-  int ToInt() const;
+  int ToInt(int left = true) const;
   long long ToLongLong() const;
   long double ToDouble(int) const;
   std::string GetString(int precision = -1, bool fill = true) const;
@@ -71,10 +71,19 @@ String<len>::String(const char *other) {
 template<int len>
 String<len>::String(const std::string &other) : String(other.c_str()) {}
 template<int len>
-String<len>::String(long long other) {
+String<len>::String(long long other, bool left) {
   std::stringstream str;
+  int i;
   str << other;
-  strcpy(str_, str.str().c_str());
+  if (left) {
+    strcpy(str_, str.str().c_str());
+  }
+  else {
+    for (i = 0; i < len - str.str().length(); i++) {
+      str_[i] = ' ';
+    }
+    strcpy(str_ + len - str.str().length(), str.str().c_str());
+  }
 }
 template<int len>
 String<len>::String(const long double &other, int precision) {
@@ -136,10 +145,19 @@ std::istream &operator>>(std::istream &is, String<len> &str) {
   return is;
 }
 template<int len>
-int String<len>::ToInt() const {
+int String<len>::ToInt(int left) const {
   int i, result = 0;
-  for (i = 0; str_[i] != '\0'; i++) {
-    result = result * 10 + str_[i] - '0';
+  if (left) {
+    for (i = 0; str_[i] != '\0'; i++) {
+      result = result * 10 + str_[i] - '0';
+    }
+  }
+  else {
+    int base = 1;
+    for (i = len - 1; isdigit(str_[i]); i--) {
+      result += base * (str_[i] - '0');
+      base *= 10;
+    }
   }
   return result;
 }

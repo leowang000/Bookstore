@@ -1,7 +1,7 @@
 #include "Instruction.h"
 #include "Tools/error.h"
 
-Instruction::Instruction(int time) : time_(time) {}
+Instruction::Instruction(int time) : time_(time, false) {}
 bool Instruction::Execute(Accounts &accounts, Books &books, Log &log) {
   return false;
 }
@@ -218,7 +218,7 @@ bool BuyInst::Execute(Accounts &accounts, Books &books, Log &log) {
   books.Modify(book, books.FindByISBN(ISBN_).front());
   std::cout << std::fixed << std::setprecision(2) << income << "\n";
   FinanceInfo finance_info(log.GetLastFinanceInfo());
-  finance_info.time_ = time_.ToInt();
+  finance_info.time_ = time_.ToInt(false);
   finance_info.income_ += income;
   log.AddFinanceInfo(finance_info);
   return false;
@@ -300,7 +300,7 @@ bool ImportInst::Execute(Accounts &accounts, Books &books, Log &log) {
   book.quantity_ = quantity_t(book.quantity_.ToLongLong() + quantity_.ToLongLong());
   books.Modify(book, books.FindByISBN(book.ISBN_).front());
   FinanceInfo finance_info(log.GetLastFinanceInfo());
-  finance_info.time_ = time_.ToInt();
+  finance_info.time_ = time_.ToInt(false);
   finance_info.outcome_ += cost_.ToDouble(2);
   log.AddFinanceInfo(finance_info);
   return false;
