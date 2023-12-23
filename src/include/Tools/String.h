@@ -127,7 +127,7 @@ bool String<len>::operator!=(const String<len> &rhs) const {
 }
 template<int len>
 std::ostream &operator<<(std::ostream &os, const String<len> &str) {
-  os << str.str_;
+  os << str.GetString();
   return os;
 }
 template<int len>

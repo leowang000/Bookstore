@@ -234,7 +234,6 @@ void BookStore::CheckInstruction() {
   }
   catch (ErrorException &ex) {
     delete inst_;
-    //throw ErrorException("INVALID");
     throw ErrorException(ex.GetMessage());
   }
 }

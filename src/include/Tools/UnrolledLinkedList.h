@@ -40,6 +40,7 @@ public:
   void Print(std::ostream &os);
   bool Empty() const;
   std::vector<pair_t> GetAll();
+  int Length() const;
 
 private:
   static const int maxBlockSize = 300;
@@ -439,6 +440,14 @@ std::vector<typename UnrolledLinkedList<key_t, val_t>::pair_t> UnrolledLinkedLis
     for (i = 0; i < node.size_; i++) {
       result.push_back(block[i]);
     }
+  }
+  return result;
+}
+template<class key_t, class val_t>
+int UnrolledLinkedList<key_t, val_t>::Length() const {
+  int result = 0;
+  for (auto &node : node_list_) {
+    result += node.size_;
   }
   return result;
 }

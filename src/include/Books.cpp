@@ -31,10 +31,12 @@ std::string Books::Book::GetString() {
 Books::Books(char *book_file_name, char *ISBN_data_file_name, char *ISBN_node_file_name,
              char *book_name_data_file_name, char *book_name_node_file_name, char *author_data_file_name,
              char *author_node_file_name, char *keyword_data_file_name, char *keyword_node_file_name)
-    : book_cnt_(0), book_file_(book_file_name), ISBN_map_(ISBN_data_file_name, ISBN_node_file_name),
+    : book_file_(book_file_name), ISBN_map_(ISBN_data_file_name, ISBN_node_file_name),
     book_name_map_(book_name_data_file_name, book_name_node_file_name),
     author_map_(author_data_file_name, author_node_file_name),
-    keyword_map_(keyword_data_file_name, keyword_node_file_name) {}
+    keyword_map_(keyword_data_file_name, keyword_node_file_name) {
+  book_cnt_ = ISBN_map_.Length();
+}
 std::vector<int> Books::FindByISBN(const ISBN_t &ISBN) {
   return ISBN_map_.Find(ISBN);
 }
@@ -150,8 +152,8 @@ void Books::ReadBook(Book &dst, int line_num) {
 }
 int Books::WriteBook(Book &src, int line_num) {
   if (line_num == -1) {
-    book_file_.Write(src, book_cnt_);
-    return book_cnt_++;
+    line_num = book_cnt_;
+    book_cnt_++;
   }
   book_file_.Write(src, line_num);
   return line_num;
