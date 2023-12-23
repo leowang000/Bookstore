@@ -6,8 +6,11 @@ FinanceInfo::FinanceInfo() : time_(), income_(), outcome_() {}
 FinanceInfo::FinanceInfo(int time, const long double &income, const long double &outcome)
     : time_(time), income_(income), outcome_(outcome) {}
 Log::Log(char *finance_file_name, char *log_file_name, char *employee_data_file_name, char *employee_node_file_name)
-    : log_file_length_(), finance_file_length_(), finance_file_(finance_file_name), log_file_(log_file_name),
-    employee_map_(employee_data_file_name, employee_node_file_name) {}
+    : finance_file_(finance_file_name), log_file_(log_file_name),
+    employee_map_(employee_data_file_name, employee_node_file_name) {
+  finance_file_length_ = finance_file_.GetLength<FinanceInfo>();
+  log_file_length_ = log_file_.GetLength<log_info_t>();
+}
 void Log::PrintLogFile(std::ostream &os) {
   int i, j;
   log_info_t info[logReadLength];

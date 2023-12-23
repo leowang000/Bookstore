@@ -10,6 +10,7 @@ public:
   bool Open(); // open or create
   template<class T> void Read(T &, int, int bias = 0);
   template<class T> void Write(T &, int, int bias = 0);
+  template<class T> int GetLength();
 
 private:
   char *file_name_;
@@ -28,6 +29,14 @@ void File::Write(T &src, int index, int bias) {
   this->seekp(index * sizeof(T) + bias);
   this->write(reinterpret_cast<char *>(&src), sizeof(T));
   this->close();
+}
+template<class T>
+int File::GetLength() {
+  Open();
+  seekg(0, std::ios::end);
+  int length = tellg();
+  close();
+  return length / sizeof(T);
 }
 
 #endif //BOOKSTORE_2023_FILE_H

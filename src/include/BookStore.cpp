@@ -10,7 +10,9 @@ BookStore::BookStore(char *account_data_file_name, char *account_node_file_name,
            author_data_file_name, author_node_file_name, keyword_data_file_name, keyword_node_file_name),
     log_(finance_file_name, log_file_name, employee_data_file_name, employee_node_file_name) {
   File log_file(log_file_name);
-  if (log_file.Open()) {
+  log_file.Open();
+  log_file.seekg(0, std::ios::end);
+  if (log_file.tellg() != 0) {
     int i;
     log_file.seekg(-sizeof(log_info_t), std::ios::end);
     log_info_t last_log_info;
@@ -24,11 +26,11 @@ BookStore::BookStore(char *account_data_file_name, char *account_node_file_name,
       time_ = 10 * time_ + time_string[i] - '0';
     }
     time_++;
-    log_file.close();
   }
   else {
     time_ = 0;
   }
+  log_file.close();
 }
 void BookStore::Init() {
   accounts_.Init();
