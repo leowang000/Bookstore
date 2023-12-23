@@ -19,6 +19,7 @@ public:
   bool ExecuteInstruction();
   void AddLog(bool valid = true);
 
+private:
   int time_;
   Accounts accounts_;
   Books books_;
