@@ -39,9 +39,6 @@ void ClearFiles() {
 }
 int main() {
   //ClearFiles();
-
-  //freopen("/mnt/d/1大学学习/课程/程序设计/大作业/Bookstore-2023/bookstore-testcases/advanced/testcase1/2.in", "r", stdin);
-  //freopen("my_output.out", "w", stdout);
   BookStore book_store(account_data_file_name, account_node_file_name, book_file_name, ISBN_data_file_name,
                       ISBN_node_file_name, book_name_data_file_name, book_name_node_file_name, author_data_file_name,
                       author_node_file_name, keyword_data_file_name, keyword_node_file_name, finance_file_name,
