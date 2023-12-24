@@ -17,10 +17,11 @@ public:
   void GetInstruction(const std::string &);
   void CheckInstruction();
   bool ExecuteInstruction();
-  void AddLog(bool valid = true);
+  void AddLog();
 
 private:
   int time_;
+  bool is_instruction_valid_;
   Accounts accounts_;
   Books books_;
   Log log_;

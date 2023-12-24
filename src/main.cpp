@@ -63,7 +63,7 @@ int main() {
     }
     catch (ErrorException &ex) {
       std::cout << "Invalid\n";
-      book_store.AddLog(false);
+      book_store.AddLog();
     }
   }
   return 0;

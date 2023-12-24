@@ -5,7 +5,7 @@ BookStore::BookStore(char *account_data_file_name, char *account_node_file_name,
                      char *book_name_node_file_name, char *author_data_file_name, char *author_node_file_name,
                      char *keyword_data_file_name, char *keyword_node_file_name, char *finance_file_name,
                      char *log_file_name, char *employee_data_file_name, char *employee_node_file_name)
-    : inst_(nullptr), accounts_(account_data_file_name, account_node_file_name),
+    : inst_(nullptr), is_instruction_valid_(true), accounts_(account_data_file_name, account_node_file_name),
     books_(book_file_name, ISBN_data_file_name, ISBN_node_file_name, book_name_data_file_name, book_name_node_file_name,
            author_data_file_name, author_node_file_name, keyword_data_file_name, keyword_node_file_name),
     log_(finance_file_name, log_file_name, employee_data_file_name, employee_node_file_name) {
@@ -36,6 +36,7 @@ void BookStore::Init() {
   accounts_.Init();
 }
 void BookStore::GetInstruction(const std::string &in) {
+  is_instruction_valid_ = true;
   std::istringstream input(in);
   SkipSpaces(input);
   if (IsEndOfLine(input)) {
@@ -226,6 +227,7 @@ void BookStore::GetInstruction(const std::string &in) {
     }
   }
   catch (ErrorException &ex) {
+    is_instruction_valid_ = false;
     throw ErrorException("INVALID INPUT FORMAT");
   }
 }
@@ -236,6 +238,7 @@ void BookStore::CheckInstruction() {
   }
   catch (ErrorException &ex) {
     delete inst_;
+    is_instruction_valid_ = false;
     throw ErrorException(ex.GetMessage());
   }
 }
@@ -244,9 +247,9 @@ bool BookStore::ExecuteInstruction() {
   delete inst_;
   return will_exit;
 }
-void BookStore::AddLog(bool valid) {
+void BookStore::AddLog() {
   user_t now_user_str(accounts_.GetNowUserString());
-  if (valid) {
+  if (is_instruction_valid_) {
     instruction_t instruction_str(inst_->GetString());
     log_info_t log_info(now_user_str.GetString() + ": " + instruction_str.GetString());
     log_.AddLogInfo(log_info);
